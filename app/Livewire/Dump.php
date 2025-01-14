@@ -57,7 +57,6 @@ class Dump extends Component
             $todo = Todo::getAllTodos()->where('id', $id)->first();
             $todo->worked_at = now();
             $todo->save();
-            toast()->success('Todo added to today')->push();
             $this->refreshTodos();
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
