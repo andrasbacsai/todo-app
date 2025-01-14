@@ -5,9 +5,12 @@ namespace App\Livewire;
 use App\Models\Todo;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Usernotnull\Toast\Concerns\WireToast;
 
 class Dump extends Component
 {
+    use WireToast;
+
     public $todos;
 
     #[Validate('required|string|min:3|max:255')]

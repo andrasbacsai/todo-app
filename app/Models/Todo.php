@@ -51,6 +51,11 @@ class Todo extends Model
         return self::where('user_id', auth()->user()->id)->where('status', '!=', 'completed')->get();
     }
 
+    public static function getPreviousUndoneTodos()
+    {
+        return self::where('user_id', auth()->user()->id)->where('worked_at', '<', now()->subDay(1)->startOfDay())->orWhere('worked_at', '<=', now()->subDay(1)->endOfDay())->where('status', '!=', 'completed')->get();
+    }
+
     public static function updateTodo($id, $data)
     {
         $todo = self::where('user_id', auth()->user()->id)->where('id', $id)->first();
@@ -62,9 +67,9 @@ class Todo extends Model
         return true;
     }
 
-    public static function transferYesterdayTodos()
+    public static function transferPreviousUndoneTodos()
     {
-        $todos = self::where('user_id', auth()->user()->id)->where('worked_at', '>=', now()->subDay(1)->startOfDay())->orWhere('worked_at', '<=', now()->subDay(1)->endOfDay())->get();
+        $todos = self::getPreviousUndoneTodos();
         foreach ($todos as $todo) {
             $todo->worked_at = now();
             $todo->save();

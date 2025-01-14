@@ -2,16 +2,7 @@
     <a wire:navigate href="{{ route('dashboard') }}" class="flex items-center gap-2 text-md">
         <x-logo size="8" /></a>
     <div class="flex-1"></div>
-    {{-- @foreach ($breadcrumbs as $breadcrumb)
-        <x-breadcrumb.list>
-            <x-breadcrumb.item>
-                <x-breadcrumb.link>{{ $breadcrumb }}</x-breadcrumb.link>
-            </x-breadcrumb.item>
-            @if (!$loop->last)
-                <x-breadcrumb.separator />
-            @endif
-        </x-breadcrumb.list>
-    @endforeach --}}
+    <x-aside />
     <div class="flex-1">
     </div>
     <x-dropdown-menu class="inline ">

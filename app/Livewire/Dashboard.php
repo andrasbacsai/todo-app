@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Todo;
 use App\Settings\InstanceSettings;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -28,6 +29,9 @@ class Dashboard extends Component
 
     #[Locked]
     public $completedTodos;
+
+    #[Locked]
+    public $previousUndoneTodos;
 
     public array $updatedTodos = [];
 
@@ -62,7 +66,7 @@ class Dashboard extends Component
     public function transferYesterdayTodos()
     {
         try {
-            Todo::transferYesterdayTodos();
+            Todo::transferPreviousUndoneTodos();
             $this->refreshTodos();
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
@@ -74,6 +78,7 @@ class Dashboard extends Component
         $this->todos = Todo::getTodayTodos();
         $this->backlogTodos = $this->todos->where('status', '!=', 'completed');
         $this->completedTodos = $this->todos->where('status', 'completed');
+        $this->previousUndoneTodos = Todo::getPreviousUndoneTodos();
         $this->updatedTodos = $this->getUpdatedTitle();
     }
 
@@ -88,7 +93,7 @@ class Dashboard extends Component
             $this->refreshTodos();
             $this->title = '';
         } catch (\Exception $e) {
-            // toast()->danger($e->getMessage())->push();
+            toast()->danger($e->getMessage())->push();
         }
     }
 
@@ -118,8 +123,12 @@ class Dashboard extends Component
     public function switchTodoStatus($id)
     {
         try {
-            $updateTodo = $this->updatedTodos[$id];
-            $updateTodo['status'] = $updateTodo['status'] === 'completed' ? 'backlog' : 'completed';
+            $todo = Todo::find($id);
+            if (! $todo) {
+                throw new \Exception('Todo not found');
+            }
+            $updateTodo = $this->updatedTodos[$id] ?? ['title' => $todo->title, 'description' => $todo->description];
+            $updateTodo['status'] = $todo->status === 'completed' ? 'backlog' : 'completed';
             Todo::updateTodo($id, $updateTodo);
             $this->refreshTodos();
         } catch (\Exception $e) {
@@ -149,5 +158,11 @@ class Dashboard extends Component
     {
 
         return view('livewire.dashboard');
+    }
+
+    #[Computed]
+    public function completedCount()
+    {
+        return $this->completedTodos->count();
     }
 }
