@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\TodoUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,14 @@ class Todo extends Model
     use HasFactory;
 
     protected $fillable = ['title', 'status', 'description', 'user_id', 'worked_at'];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::updating(function ($model) {
+            event(new TodoUpdated($model));
+        });
+    }
 
     public function user()
     {

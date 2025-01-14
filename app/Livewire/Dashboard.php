@@ -31,6 +31,15 @@ class Dashboard extends Component
 
     public array $updatedTodos = [];
 
+    public function getListeners()
+    {
+        $userId = auth()->user()->id;
+
+        return [
+            "echo-private:user.{$userId},TodoUpdated" => 'refreshTodos',
+        ];
+    }
+
     public function mount(InstanceSettings $instanceSettings)
     {
         $this->isPaymentEnabled = $instanceSettings->is_payment_enabled;
