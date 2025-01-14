@@ -45,7 +45,13 @@ class Todo extends Model
 
     public static function getAllTodosExceptToday()
     {
-        return self::where('user_id', auth()->user()->id)->where('worked_at', '<', now()->startOfDay())->orWhere('worked_at', null)->orderBy('created_at', 'desc')->get();
+        return self::where('user_id', auth()->user()->id)
+            ->where(function ($query) {
+                $query->where('worked_at', '<', now()->startOfDay())
+                    ->orWhereNull('worked_at');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public static function getTodayTodos()
@@ -60,7 +66,13 @@ class Todo extends Model
 
     public static function getPreviousUndoneTodos()
     {
-        return self::where('user_id', auth()->user()->id)->where('worked_at', '<', now()->subDay(1)->startOfDay())->orWhere('worked_at', '<=', now()->subDay(1)->endOfDay())->where('status', '!=', 'completed')->get();
+        return self::where('user_id', auth()->user()->id)
+            ->where(function ($query) {
+                $query->where('worked_at', '<', now()->subDay(1)->startOfDay())
+                    ->orWhere('worked_at', '<=', now()->subDay(1)->endOfDay());
+            })
+            ->where('status', '!=', 'completed')
+            ->get();
     }
 
     public static function updateTodo($id, $data)
