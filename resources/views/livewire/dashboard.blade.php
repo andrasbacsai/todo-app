@@ -80,8 +80,9 @@
             <x-accordion type="single" collapsible wire:key="completed-todos">
                 @if ($this->completedCount > 0)
                     <x-accordion.item value="todos" class="border-b-0">
-                        <x-accordion.trigger class="hover:no-underline">Completed
-                            ({{ $this->completedCount }})</x-accordion.trigger>
+                        <x-accordion.trigger
+                            class="hover:no-underline text-xs text-muted-foreground font-normal px-2">Show
+                            {{ $this->completedCount }} completed tasks</x-accordion.trigger>
                         <x-accordion.content class="text-md">
                             <div class="flex flex-col">
                                 @foreach ($completedTodos as $todo)
