@@ -16,13 +16,13 @@ class Todo extends Model
     {
         parent::boot();
         static::updated(function () {
-            TodoUpdated::dispatch(auth()->user()->id);
+            broadcast(new TodoUpdated(auth()->user()->id))->toOthers();
         });
         static::created(function () {
-            TodoUpdated::dispatch(auth()->user()->id);
+            broadcast(new TodoUpdated(auth()->user()->id))->toOthers();
         });
         static::deleted(function () {
-            TodoUpdated::dispatch(auth()->user()->id);
+            broadcast(new TodoUpdated(auth()->user()->id))->toOthers();
         });
     }
 
