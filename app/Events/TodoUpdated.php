@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Todo;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -13,12 +12,12 @@ class TodoUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public Todo $todo) {}
+    public function __construct(public $user_id) {}
 
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('user.'.$this->todo->user_id),
+            new PrivateChannel('user.'.$this->user_id),
         ];
     }
 }
