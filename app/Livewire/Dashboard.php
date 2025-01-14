@@ -113,6 +113,10 @@ class Dashboard extends Component
     {
         try {
             $todo = Todo::getTodayTodos()->where('id', $id)->first();
+            if (! $todo) {
+                return;
+            }
+
             $todo->delete();
             $this->refreshTodos();
         } catch (\Exception $e) {

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Events\TodoUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Todo extends Model
 {
@@ -16,13 +17,19 @@ class Todo extends Model
     {
         parent::boot();
         static::updated(function () {
-            broadcast(new TodoUpdated(auth()->user()->id))->toOthers();
+            if (Auth::check()) {
+                broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
+            }
         });
         static::created(function () {
-            broadcast(new TodoUpdated(auth()->user()->id))->toOthers();
+            if (Auth::check()) {
+                broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
+            }
         });
         static::deleted(function () {
-            broadcast(new TodoUpdated(auth()->user()->id))->toOthers();
+            if (Auth::check()) {
+                broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
+            }
         });
     }
 
