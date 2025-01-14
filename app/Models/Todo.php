@@ -15,7 +15,13 @@ class Todo extends Model
     protected static function boot()
     {
         parent::boot();
-        static::updating(function ($model) {
+        static::updated(function ($model) {
+            event(new TodoUpdated($model));
+        });
+        static::created(function ($model) {
+            event(new TodoUpdated($model));
+        });
+        static::deleted(function ($model) {
             event(new TodoUpdated($model));
         });
     }

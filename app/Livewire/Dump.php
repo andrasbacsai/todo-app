@@ -13,6 +13,15 @@ class Dump extends Component
     #[Validate('required|string|min:3|max:255')]
     public $title;
 
+    public function getListeners()
+    {
+        $userId = auth()->user()->id;
+
+        return [
+            "echo-private:user.{$userId},TodoUpdated" => 'refreshTodos',
+        ];
+    }
+
     public function mount()
     {
         $this->refreshTodos();
