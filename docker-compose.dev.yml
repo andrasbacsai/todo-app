@@ -1,0 +1,36 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/development/Dockerfile
+      args:
+        USER_ID: ${UID:-1000}
+        GROUP_ID: ${GID:-1000}
+    ports:
+      - "8000:8080"
+      - "9999:9999"
+    env_file:
+      - .env.development
+    volumes:
+      - .:/var/www/html/
+    depends_on:
+      - redis
+  vite:
+    container_name: vite
+    image: node:22-alpine
+    pull_policy: always
+    working_dir: /var/www/html
+    environment:
+      VITE_HOST: "${VITE_HOST:-localhost}"
+      VITE_PORT: "${VITE_PORT:-5173}"
+    ports:
+      - "${VITE_PORT:-5173}:${VITE_PORT:-5173}"
+    volumes:
+      - .:/var/www/html/:cached
+    command: sh -c "npm install && npm run dev"
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    pull_policy: always
+    env_file:
+      - .env.development

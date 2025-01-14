@@ -1,0 +1,7 @@
+services:
+  php:
+    container_name: php
+    restart: always
+    working_dir: /var/www/html
+    extra_hosts:
+      - host.docker.internal:host-gateway
