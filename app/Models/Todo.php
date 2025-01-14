@@ -64,12 +64,12 @@ class Todo extends Model
         return self::where('user_id', auth()->user()->id)->where('status', '!=', 'completed')->get();
     }
 
-    public static function getPreviousUndoneTodos()
+    public static function getYesterdayUndoneTodos()
     {
         return self::where('user_id', auth()->user()->id)
             ->where(function ($query) {
                 $query->where('worked_at', '<', now()->subDay(1)->startOfDay())
-                    ->orWhere('worked_at', '<=', now()->subDay(1)->endOfDay());
+                    ->orWhere('worked_at', '>', now()->subDay(1)->endOfDay());
             })
             ->where('status', '!=', 'completed')
             ->get();
@@ -86,9 +86,9 @@ class Todo extends Model
         return true;
     }
 
-    public static function transferPreviousUndoneTodos()
+    public static function transferUndoneYesterdayTodos()
     {
-        $todos = self::getPreviousUndoneTodos();
+        $todos = self::getYesterdayUndoneTodos();
         foreach ($todos as $todo) {
             $todo->worked_at = now();
             $todo->save();

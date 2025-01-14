@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Todo;
 use App\Settings\InstanceSettings;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
@@ -33,11 +34,15 @@ class Dashboard extends Component
     #[Locked]
     public $previousUndoneTodos;
 
-    public array $updatedTodos = [];
+    public $editingTodoId = null;
+
+    public $editingTitle = '';
+
+    public $editingDescription = '';
 
     public function getListeners()
     {
-        $userId = auth()->user()->id;
+        $userId = Auth::user()->id;
 
         return [
             "echo-private:user.{$userId},TodoUpdated" => 'refreshTodos',
@@ -47,30 +52,7 @@ class Dashboard extends Component
     public function mount(InstanceSettings $instanceSettings)
     {
         $this->isPaymentEnabled = $instanceSettings->is_payment_enabled;
-
         $this->refreshTodos();
-
-    }
-
-    private function getUpdatedTitle()
-    {
-        return collect($this->todos)->mapWithKeys(function ($todo) {
-            return [$todo['id'] => [
-                'title' => $todo['title'],
-                'description' => $todo['description'],
-                'status' => $todo['status'],
-            ]];
-        })->toArray();
-    }
-
-    public function transferYesterdayTodos()
-    {
-        try {
-            Todo::transferPreviousUndoneTodos();
-            $this->refreshTodos();
-        } catch (\Exception $e) {
-            toast()->danger($e->getMessage())->push();
-        }
     }
 
     public function refreshTodos()
@@ -78,8 +60,7 @@ class Dashboard extends Component
         $this->todos = Todo::getTodayTodos();
         $this->backlogTodos = $this->todos->where('status', '!=', 'completed');
         $this->completedTodos = $this->todos->where('status', 'completed');
-        $this->previousUndoneTodos = Todo::getPreviousUndoneTodos();
-        $this->updatedTodos = $this->getUpdatedTitle();
+        $this->previousUndoneTodos = Todo::getYesterdayUndoneTodos();
     }
 
     public function addTodo()
@@ -88,7 +69,7 @@ class Dashboard extends Component
             $this->validate();
             Todo::create([
                 'title' => $this->title,
-                'user_id' => auth()->user()->id,
+                'user_id' => Auth::user()->id,
             ]);
             $this->refreshTodos();
             $this->title = '';
@@ -131,20 +112,32 @@ class Dashboard extends Component
             if (! $todo) {
                 throw new \Exception('Todo not found');
             }
-            $updateTodo = $this->updatedTodos[$id] ?? ['title' => $todo->title, 'description' => $todo->description];
-            $updateTodo['status'] = $todo->status === 'completed' ? 'backlog' : 'completed';
-            Todo::updateTodo($id, $updateTodo);
+
+            Todo::updateTodo($id, [
+                'title' => $todo->title,
+                'description' => $todo->description,
+                'status' => $todo->status === 'completed' ? 'backlog' : 'completed',
+            ]);
+
             $this->refreshTodos();
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
         }
     }
 
-    public function updateTodo($id)
+    public function updateTodo()
     {
         try {
-            $updateTodo = $this->updatedTodos[$id];
-            Todo::updateTodo($id, $updateTodo);
+            Todo::updateTodo($this->editingTodoId, [
+                'title' => $this->editingTitle,
+                'description' => $this->editingDescription,
+                'status' => $this->todos->where('id', $this->editingTodoId)->first()->status,
+            ]);
+
+            $this->editingTodoId = null;
+            $this->editingTitle = '';
+            $this->editingDescription = '';
+
             $this->refreshTodos();
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
@@ -153,7 +146,7 @@ class Dashboard extends Component
 
     public function logout()
     {
-        auth()->logout();
+        Auth::logout();
 
         return redirect()->route('login');
     }

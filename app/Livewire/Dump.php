@@ -16,6 +16,10 @@ class Dump extends Component
     #[Validate('required|string|min:3|max:255')]
     public $title;
 
+    public $editingTodoId = null;
+    public $editingTitle = '';
+    public $editingDescription = '';
+
     public function getListeners()
     {
         $userId = auth()->user()->id;
@@ -57,6 +61,25 @@ class Dump extends Component
             $todo = Todo::getAllTodos()->where('id', $id)->first();
             $todo->worked_at = now();
             $todo->save();
+            $this->refreshTodos();
+        } catch (\Exception $e) {
+            toast()->danger($e->getMessage())->push();
+        }
+    }
+
+    public function updateTodo()
+    {
+        try {
+            Todo::updateTodo($this->editingTodoId, [
+                'title' => $this->editingTitle,
+                'description' => $this->editingDescription,
+                'status' => $this->todos->where('id', $this->editingTodoId)->first()->status,
+            ]);
+
+            $this->editingTodoId = null;
+            $this->editingTitle = '';
+            $this->editingDescription = '';
+
             $this->refreshTodos();
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
