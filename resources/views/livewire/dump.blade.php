@@ -8,7 +8,7 @@
             </x-form>
             <div class="flex flex-col space-y-2">
                 @forelse ($todos as $todo)
-                    <div class="flex justify-between items-center px-2 hover:bg-muted/50 transiNo todos for todaytion-all duration-150"
+                    <div class="flex justify-between items-center px-2 hover:bg-muted/50 transition-all duration-150"
                         wire:key="todo-{{ $todo->id }}">
                         <div class="flex flex-col">
                             <p>{{ $todo->title }}</p>

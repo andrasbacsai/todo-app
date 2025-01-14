@@ -74,7 +74,7 @@
                         </div>
                     </div>
                 @empty
-                    <p class="text-muted-foreground text-xs p-2">No todos for today. Relax!</p>
+                    <p class="text-muted-foreground text-xs p-2">No tasks for today. Relax!</p>
                 @endforelse
             </div>
             <x-accordion type="single" collapsible wire:key="completed-todos">
