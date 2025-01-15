@@ -1,7 +1,7 @@
 <div>
     <div class="flex flex-col justify-center items-center">
         <div class="flex-1 w-full max-w-full lg:max-w-2xl">
-            <x-form wire:submit="addTodo" class="pb-10">
+            <x-form wire:submit="addTodo" :class="$backlogTodos->count() > 0 ? 'pb-10' : ''">
                 <x-form.input name="title" class="w-full" wire:model="title" placeholder="Enter task name" type="text"
                     copy="false" label="" />
                 <x-button type="submit" class="hidden">Add todo</x-button>
@@ -100,11 +100,26 @@
                     </x-accordion.item>
                 @endif
             </x-accordion>
-            @if ($previousUndoneTodos->count() > 0)
-                <x-button size="sm" variant="outline" wire:click="transferYesterdayTodos" class="mt-4">Transfer
-                    yesterday's
-                    todos</x-button>
-            @endif
+            <x-accordion type="single" collapsible wire:key="yesterday-todos">
+                @if ($this->previousUndoneTodos->count() > 0)
+                    <x-accordion.item value="todos" class="border-b-0">
+                        <x-accordion.trigger
+                            class="hover:no-underline text-xs text-muted-foreground font-normal px-2">Show
+                            {{ $this->previousUndoneTodos->count() }} undone tasks from yesterday</x-accordion.trigger>
+                        <x-accordion.content class="text-md">
+                            <div class="flex flex-col">
+                                @foreach ($previousUndoneTodos as $todo)
+                                    <div class="flex justify-between items-center px-2 py-1 cursor-pointer hover:bg-muted/50 transition-all duration-150"
+                                        wire:key="yesterday-todo-{{ $todo->id }}"
+                                        wire:click="transferYesterdayTodos('{{ $todo->id }}')">
+                                        {{ $todo->title }} {{ $todo->worked_at }}
+                                    </div>
+                                @endforeach
+                            </div>
+                        </x-accordion.content>
+                    </x-accordion.item>
+                @endif
+            </x-accordion>
         </div>
     </div>
 </div>

@@ -67,6 +67,21 @@ class Dump extends Component
         }
     }
 
+    public function deleteTodo($id)
+    {
+        try {
+            $todo = Todo::getAllTodosExceptToday()->where('id', $id)->first();
+            if (! $todo) {
+                return;
+            }
+
+            $todo->delete();
+            $this->refreshTodos();
+        } catch (\Exception $e) {
+            toast()->danger('Todo not found')->push();
+        }
+    }
+
     public function updateTodo()
     {
         try {

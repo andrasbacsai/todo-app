@@ -68,11 +68,11 @@ class Todo extends Model
     {
         return self::where('user_id', auth()->user()->id)
             ->where(function ($query) {
-                $query->where('worked_at', '<', now()->subDay(1)->startOfDay())
-                    ->orWhere('worked_at', '>', now()->subDay(1)->endOfDay());
+                $query->where('worked_at', '>=', now()->subDay(1)->startOfDay())
+                    ->where('worked_at', '<=', now()->subDay(1)->endOfDay());
             })
             ->where('status', '!=', 'completed')
-            ->get();
+            ->get()->sortBy('worked_at');
     }
 
     public static function updateTodo($id, $data)

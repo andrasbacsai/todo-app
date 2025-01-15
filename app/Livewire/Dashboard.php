@@ -63,6 +63,21 @@ class Dashboard extends Component
         $this->previousUndoneTodos = Todo::getYesterdayUndoneTodos();
     }
 
+    public function transferYesterdayTodos($id)
+    {
+        try {
+            $todo = Todo::getYesterdayUndoneTodos()->where('id', $id)->first();
+            if (! $todo) {
+                return;
+            }
+            $todo->worked_at = now();
+            $todo->save();
+            $this->refreshTodos();
+        } catch (\Exception $e) {
+            toast()->danger($e->getMessage())->push();
+        }
+    }
+
     public function addTodo()
     {
         try {
