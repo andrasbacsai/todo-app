@@ -16,7 +16,6 @@ services:
     depends_on:
       - redis
   vite:
-    container_name: vite
     image: node:22-alpine
     pull_policy: always
     working_dir: /var/www/html
@@ -29,7 +28,6 @@ services:
       - .:/var/www/html/:cached
     command: sh -c "npm install && npm run dev"
   redis:
-    container_name: redis
     image: redis:7-alpine
     pull_policy: always
     env_file:
