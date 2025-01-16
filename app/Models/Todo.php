@@ -21,6 +21,9 @@ class Todo extends Model
                 broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
             }
         });
+        static::creating(function ($todo) {
+            $todo->user_id = Auth::user()->id;
+        });
         static::created(function () {
             if (Auth::check()) {
                 broadcast(new TodoUpdated(Auth::user()->id))->toOthers();

@@ -6,10 +6,9 @@
                     copy="false" label="" />
                 <x-button type="submit" class="hidden">Add todo</x-button>
             </x-form>
-
             <div class="flex flex-col space-y-2">
                 @forelse ($backlogTodos as $todo)
-                    <div class="flex items-center hover:bg-muted transition-all duration-150"
+                    <div class="flex justify-between items-center px-2 hover:bg-muted/50 transition-all duration-150"
                         wire:key="todo-{{ $todo->id }}">
                         <div wire:click="switchTodoStatus('{{ $todo->id }}')"
                             class="w-full cursor-pointer select-none px-2">

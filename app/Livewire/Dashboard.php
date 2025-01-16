@@ -84,7 +84,7 @@ class Dashboard extends Component
             $this->validate();
             Todo::create([
                 'title' => $this->title,
-                'user_id' => Auth::user()->id,
+                'worked_at' => now(),
             ]);
             $this->refreshTodos();
             $this->title = '';

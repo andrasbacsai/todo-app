@@ -17,7 +17,9 @@ class Dump extends Component
     public $title;
 
     public $editingTodoId = null;
+
     public $editingTitle = '';
+
     public $editingDescription = '';
 
     public function getListeners()
@@ -43,9 +45,8 @@ class Dump extends Component
     {
         try {
             $this->validate();
-            $todo = Todo::create([
+            Todo::create([
                 'title' => $this->title,
-                'user_id' => auth()->user()->id,
                 'worked_at' => null,
             ]);
             $this->refreshTodos();
