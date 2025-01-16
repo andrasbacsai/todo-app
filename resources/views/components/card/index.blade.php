@@ -1,3 +1,3 @@
-<div {{ $attributes->twMerge('rounded-xl border dark:border-border bg-card text-card-foreground shadow rounded') }}>
+<div {{ $attributes->twMerge('rounded-xl border bg-card text-card-foreground shadow') }}>
     {{ $slot }}
 </div>

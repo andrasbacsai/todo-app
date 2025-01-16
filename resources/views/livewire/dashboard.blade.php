@@ -23,7 +23,7 @@
 
                         <div class="flex items-center space-x-0 gap-0">
                             <x-dialog class="w-full text-right">
-                                <x-dialog.trigger variant="link" size="sm" class="p-1 px-2"
+                                <x-dialog.trigger size="sm" variant="link" class="p-1 px-2"
                                     @click="
                                         $wire.editingTodoId = '{{ $todo->id }}';
                                         $wire.editingTitle = `{{ addslashes($todo->title) }}`;
@@ -44,8 +44,7 @@
                                                 label="" />
                                         </div>
                                         <x-dialog.footer>
-                                            <x-button x-on:click="__dialogOpen = false" type="submit"
-                                                variant="default">Save</x-button>
+                                            <x-dialog.save type="submit" variant="default">Save</x-dialog.save>
                                             <x-dialog.close>Cancel</x-dialog.close>
                                         </x-dialog.footer>
                                     </x-form>

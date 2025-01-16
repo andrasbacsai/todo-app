@@ -17,7 +17,6 @@
         "laravel/reverb": "1.4.3",
         "laravel/tinker": "2.10.0",
         "livewire/livewire": "3.5.12",
-        "luvi-ui/laravel-luvi": "^0.5.3",
         "mallardduck/blade-lucide-icons": "^1.23",
         "opcodesio/log-viewer": "3.12.0",
         "spatie/laravel-settings": "^3.4",

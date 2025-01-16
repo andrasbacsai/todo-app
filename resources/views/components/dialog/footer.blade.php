@@ -1,3 +1,3 @@
-<div {{ $attributes->twMerge('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2') }}>
+<div {{ $attributes->twMerge('flex flex-col sm:flex-row-reverse sm:justify-between space-y-2 sm:space-y-0') }}>
     {{ $slot }}
 </div>

@@ -4,13 +4,14 @@
     'copy' => true,
 ])
 
-<div class="relative w-full" x-data="{
-    showPassword: false,
-    inputType: '{{ $type }}',
-    copied: false
-}">
+<div {{ $attributes->only(['class'])->filter(fn($class) => str_contains($class, 'col-span') || str_contains($class, 'row-span'))->merge(['class' => 'relative w-full']) }}
+    x-data="{
+        showPassword: false,
+        inputType: '{{ $type }}',
+        copied: false
+    }">
     <input :type="showPassword && inputType === 'password' ? 'text' : inputType"
-        {{ $attributes->twMerge('flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 dark:bg-input-background file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50') }} />
+        {{ $attributes->twMerge('flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 dark:bg-input-background file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 read-only:cursor-not-allowed read-only:opacity-50 text-foreground') }} />
     @if ($type === 'password')
         <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3" tabindex="-1"
             x-on:click="showPassword = !showPassword">

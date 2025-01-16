@@ -13,7 +13,7 @@
         }
     </style>
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/luvi-ui.css', 'resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
     @auth
         <script type="text/javascript" src="{{ URL::asset('js/echo.js') }}"></script>

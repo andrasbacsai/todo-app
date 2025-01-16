@@ -58,7 +58,7 @@ function handleRoot(el, Alpine) {
                     this.__isOpen = true;
 
                     this.$nextTick(() => {
-                        activationStrategy &&
+                        activationStrategy && this[activationStrategy] &&
                             this[activationStrategy].focus({
                                 preventScroll: true,
                             });
@@ -164,7 +164,9 @@ function handleItems(el, Alpine) {
             this.$data.__lastEl =
                 this.$data.__itemEls[this.$data.__itemEls.length - 1];
         },
-        "@click"() {
+        "@click"(e) {
+            // Don't close if clicking on a checkbox item
+            if (e.target.closest('[role="menuitemcheckbox"]')) return;
             this.$data.__close();
         },
         "@click.outside"() {
@@ -230,7 +232,7 @@ function handleItem(el, Alpine) {
             // Required for firefox, event.preventDefault() in handleKeyDown for
             // the Space key doesn't cancel the handleKeyUp, which in turn
             // triggers a *click*.
-            "@keyup.space.prevent"() {},
+            "@keyup.space.prevent"() { },
         };
     });
 }
@@ -277,7 +279,7 @@ function handleCheckboxItem(el, Alpine) {
             // Required for firefox, event.preventDefault() in handleKeyDown for
             // the Space key doesn't cancel the handleKeyUp, which in turn
             // triggers a *click*.
-            "@keyup.space.prevent"() {},
+            "@keyup.space.prevent"() { },
         };
     });
 }
@@ -334,7 +336,7 @@ function handleRadioGroup(el, Alpine) {
             // Required for firefox, event.preventDefault() in handleKeyDown for
             // the Space key doesn't cancel the handleKeyUp, which in turn
             // triggers a *click*.
-            "@keyup.space.prevent"() {},
+            "@keyup.space.prevent"() { },
         };
     });
 }
@@ -379,7 +381,7 @@ function handleRadioItem(el, Alpine) {
             // Required for firefox, event.preventDefault() in handleKeyDown for
             // the Space key doesn't cancel the handleKeyUp, which in turn
             // triggers a *click*.
-            "@keyup.space.prevent"() {},
+            "@keyup.space.prevent"() { },
         };
     });
 }
