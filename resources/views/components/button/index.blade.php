@@ -10,7 +10,7 @@
     $wireTarget = $attributes->get('wire:target');
 @endphp
 
-<button type="{{ $type }}" {{ $attributes->twMerge($button(['variant' => $variant, 'size' => $size])) }}>
+<button type="{{ $type }}" {{ $attributes->twMerge($button::new()(['variant' => $variant, 'size' => $size])) }}>
     <div class="inline-flex items-center gap-x-2">
         {{ $slot }}
         <x-lucide-refresh-cw id="loading-icon" wire:loading wire:target="{{ $wireTarget }}"

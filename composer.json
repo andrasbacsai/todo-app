@@ -10,6 +10,8 @@
     "require": {
         "php": "^8.3",
         "fakerphp/faker": "1.24.0",
+        "feature-ninja/cva": "^0.3.0",
+        "gehrisandro/tailwind-merge-laravel": "^1.2",
         "laravel/cashier": "^15.6",
         "laravel/fortify": "1.24.5",
         "laravel/framework": "11.33.2",

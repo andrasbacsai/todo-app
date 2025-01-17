@@ -1,7 +1,7 @@
 @inject('dialog', 'App\Services\DialogCvaService')
 
 <dialog wire:ignore.self x-effect="__dialogOpen ? $el.showModal() : $el.close()" x-on:cancel="__dialogOpen = false"
-    {{ $attributes->twMerge($dialog(['side' => 'center', 'variant' => 'dialog'])) }}>
+    {{ $attributes->twMerge($dialog::new()(['side' => 'center', 'variant' => 'dialog'])) }}>
     {{ $slot }}
 
     <button
