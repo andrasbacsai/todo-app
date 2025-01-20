@@ -99,3 +99,92 @@
 body {
     font-family: 'Roboto', sans-serif;
 }
+
+.markdown-body {
+    @apply text-base leading-relaxed;
+}
+
+.markdown-body h1 {
+    @apply text-3xl font-bold my-6;
+}
+
+.markdown-body h2 {
+    @apply text-2xl font-bold my-5;
+}
+
+.markdown-body h3 {
+    @apply text-xl font-bold my-4;
+}
+
+.markdown-body h4 {
+    @apply text-lg font-bold my-3;
+}
+
+.markdown-body h5,
+.markdown-body h6 {
+    @apply text-base font-bold my-2;
+}
+
+.markdown-body p {
+    @apply mb-4;
+}
+
+.markdown-body ul {
+    @apply list-inside my-4 space-y-1;
+}
+
+.markdown-body ol {
+    @apply list-decimal list-inside my-4 space-y-1;
+}
+
+.markdown-body li:not(.task-list-item) {
+    @apply list-disc;
+}
+
+.markdown-body .task-list-item-wrapper {
+    @apply list-none;
+}
+
+.markdown-body .task-list-item {
+    @apply flex items-start gap-2 py-0.5;
+}
+
+.markdown-body .task-list-item input[type="checkbox"] {
+    @apply mt-1 h-4 w-4 rounded border-gray-300 text-foreground focus:ring-foreground dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-foreground;
+}
+
+.markdown-body blockquote {
+    @apply border-l-4 border-gray-300 dark:border-gray-700 pl-4 my-4 italic;
+}
+
+.markdown-body a {
+    @apply text-foreground dark:text-foreground hover:underline;
+}
+
+.markdown-body img {
+    @apply max-w-full h-auto rounded-lg my-4;
+}
+
+.markdown-body pre {
+    @apply bg-gray-100 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto my-4;
+}
+
+.markdown-body code {
+    @apply font-mono text-sm;
+}
+
+.markdown-body table {
+    @apply min-w-full divide-y divide-gray-200 dark:divide-gray-800 my-4;
+}
+
+.markdown-body th {
+    @apply px-6 py-3 text-left text-xs font-medium uppercase tracking-wider;
+}
+
+.markdown-body td {
+    @apply px-6 py-4 whitespace-nowrap text-sm;
+}
+
+.markdown-body tr {
+    @apply hover:bg-gray-50 dark:hover:bg-gray-900;
+}

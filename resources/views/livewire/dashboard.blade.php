@@ -21,34 +21,9 @@
                         </div>
 
                         <div class="flex items-center space-x-0 gap-0">
-                            <x-dialog class="w-full text-right">
-                                <x-dialog.trigger size="sm" variant="link" class="p-1 px-2"
-                                    @click="
-                                        $wire.editingTodoId = '{{ $todo->id }}';
-                                        $wire.editingTitle = `{{ addslashes($todo->title) }}`;
-                                        $wire.editingDescription = `{{ addslashes($todo->description) }}`;
-                                        $dispatch('open-modal', 'edit-todo-{{ $todo->id }}');
-                                    ">
-                                    <x-lucide-pencil class="size-4 text-muted-foreground hover:text-foreground" />
-                                </x-dialog.trigger>
-                                <x-dialog.content x-dialog:name="edit-todo-{{ $todo->id }}">
-                                    <x-form wire:submit="updateTodo" class="flex flex-col space-y-2 text-foreground">
-                                        <x-dialog.header>
-                                            <x-dialog.title>Edit Todo</x-dialog.title>
-                                        </x-dialog.header>
-                                        <div class="flex flex-col space-y-2 py-2">
-                                            <x-form.input copy="false" wire:model="editingTitle" type="text"
-                                                label="" />
-                                            <x-textarea copy="false" wire:model="editingDescription" type="text"
-                                                label="" />
-                                        </div>
-                                        <x-dialog.footer>
-                                            <x-dialog.save type="submit" variant="default">Save</x-dialog.save>
-                                            <x-dialog.close>Cancel</x-dialog.close>
-                                        </x-dialog.footer>
-                                    </x-form>
-                                </x-dialog.content>
-                            </x-dialog>
+                            <a class="w-full text-right p-1 px-2" href="{{ route('todo', $todo->id) }}">
+                                <x-lucide-pencil class="size-4 text-muted-foreground hover:text-foreground" />
+                            </a>
                             <x-tooltip>
                                 <x-tooltip.trigger>
                                     <x-button size="sm" variant="link"

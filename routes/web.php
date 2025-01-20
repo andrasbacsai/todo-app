@@ -9,6 +9,7 @@ use App\Livewire\Billing;
 use App\Livewire\Dashboard;
 use App\Livewire\Dump;
 use App\Livewire\InstanceSettings as LivewireInstanceSettings;
+use App\Livewire\Todo;
 use App\Models\Purchase;
 use App\Settings\InstanceSettings;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ Route::get('/register', Register::class)->name('register');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', Dashboard::class)->name('dashboard');
+    Route::get('/t/{id}', Todo::class)->name('todo');
 
     Route::get('/dump', Dump::class)->name('dump')->middleware(EnsureSubscription::class);
 

@@ -11,6 +11,8 @@ class Todo extends Model
 {
     use HasFactory;
 
+    const MAX_DESCRIPTION_LENGTH = 10000; // 10KB limit for markdown content
+
     protected $fillable = ['title', 'status', 'description', 'user_id', 'worked_at'];
 
     protected static function boot()
@@ -39,6 +41,11 @@ class Todo extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public static function getOwnTodo($id)
+    {
+        return self::where('user_id', auth()->user()->id)->findOrFail($id);
     }
 
     public static function getAllTodos()
@@ -96,5 +103,20 @@ class Todo extends Model
             $todo->worked_at = now();
             $todo->save();
         }
+    }
+
+    // Add accessors and mutators for description
+    protected function description(): \Illuminate\Database\Eloquent\Casts\Attribute
+    {
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: fn ($value) => $value ? base64_decode($value) : null,
+            set: function ($value) {
+                if ($value === null) return null;
+                if (strlen($value) > self::MAX_DESCRIPTION_LENGTH) {
+                    throw new \Exception('Description is too long. Maximum length is ' . self::MAX_DESCRIPTION_LENGTH . ' characters.');
+                }
+                return base64_encode($value);
+            }
+        );
     }
 }
