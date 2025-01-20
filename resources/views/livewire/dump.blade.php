@@ -18,7 +18,10 @@
                                 </p>
                             @endif
                         </div>
-                        <x-dialog class="w-full text-right">
+                        <a class="w-full text-right p-1 px-2" href="{{ route('todo', $todo->id) }}">
+                            <x-lucide-pencil class="size-4 text-muted-foreground hover:text-foreground" />
+                        </a>
+                        {{-- <x-dialog class="w-full text-right">
                             <x-dialog.trigger variant="link" size="sm" class="p-1 px-2"
                                 @click="
                                     $wire.editingTodoId = '{{ $todo->id }}';
@@ -46,7 +49,7 @@
                                     </x-dialog.footer>
                                 </x-form>
                             </x-dialog.content>
-                        </x-dialog>
+                        </x-dialog> --}}
                         <x-button variant="link" size="sm" class="p-1 px-2"
                             wire:click="addToToday('{{ $todo->id }}')"><x-lucide-alarm-clock-plus
                                 class="h-4 w-4 text-muted-foreground hover:text-foreground" /></x-button>
