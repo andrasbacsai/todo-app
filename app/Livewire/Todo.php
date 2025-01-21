@@ -20,7 +20,7 @@ class Todo extends Component
     #[Validate('max:10000')]
     public $description;
 
-    public $showPreview = true;
+    public $showPreview = false;
 
     public $taskStates = [];
 
