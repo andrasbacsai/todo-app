@@ -8,26 +8,27 @@
             </x-form>
             <div class="flex flex-col space-y-2">
                 @forelse ($backlogTodos as $todo)
-                    <div class="flex justify-between items-center px-2 hover:bg-muted/50 transition-all duration-150"
+                    <div class="flex justify-between items-center px-2 group transition-all duration-150"
                         wire:key="todo-{{ $todo->id }}">
-                        <div wire:click="switchTodoStatus('{{ $todo->id }}')"
-                            class="w-full cursor-pointer select-none px-2">
+                        <a href="{{ route('todo', $todo->id) }}" wire:navigate
+                            class="w-full cursor-pointer select-none px-2  hover:bg-muted/50">
                             <p>{{ $todo->title }}</p>
                             @if (filled($todo->description))
                                 <p class="text-muted-foreground text-xs min-h-4">
                                     {{ Str::limit($todo->description, 30) }}
                                 </p>
                             @endif
-                        </div>
+                        </a>
 
-                        <div class="flex items-center space-x-0 gap-0">
-                            <a class="w-full text-right p-1 px-2" href="{{ route('todo', $todo->id) }}">
-                                <x-lucide-pencil class="size-4 text-muted-foreground hover:text-foreground" />
-                            </a>
+                        <div class="flex items-center space-x-4 gap-0">
+                            <div wire:click="switchTodoStatus('{{ $todo->id }}')"
+                                class="w-full text-right p-1 px-2 cursor-pointer group-hover:opacity-100 opacity-70 hover:bg-muted/50">
+                                <x-lucide-check-circle class="size-4 text-muted-foreground hover:text-foreground" />
+                            </div>
                             <x-tooltip>
                                 <x-tooltip.trigger>
                                     <x-button size="sm" variant="link"
-                                        class="text-muted-foreground hover:text-destructive p-1 px-2"
+                                        class="text-muted-foreground hover:text-destructive p-1 px-2 group-hover:opacity-100 opacity-70"
                                         wire:click="addToDump('{{ $todo->id }}')"><x-lucide-alarm-clock-minus
                                             class="size-4 text-muted-foreground hover:text-foreground" /></x-button>
                                 </x-tooltip.trigger>
@@ -38,7 +39,8 @@
                             <x-tooltip>
                                 <x-tooltip.trigger>
                                     <x-button size="sm" variant="link"
-                                        class="text-muted-foreground hover:text-destructive p-1 px-2"
+                                        class="text-muted-foreground hover:text-destructive p-1 px-2 group-hover:opacity-100 opacity-70"
+                                        wire:confirm="Are you sure you want to delete this todo?"
                                         wire:click="deleteTodo('{{ $todo->id }}')"><x-lucide-trash
                                             class="size-4" /></x-button>
                                 </x-tooltip.trigger>
