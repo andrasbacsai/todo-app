@@ -7,6 +7,8 @@
 
     <title>{{ $title ?? 'Template' }}</title>
 
+    <link rel="icon" type="image/x-icon" href="https://coolify.io/coolify-transparent.svg">
+
     <style>
         [x-cloak] {
             display: none;
