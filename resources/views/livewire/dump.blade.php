@@ -18,7 +18,7 @@
                                 </p>
                             @endif
                         </div>
-                        <a class="w-full text-right p-1 px-2" href="{{ route('todo', $todo->id) }}">
+                        <a class="text-right p-1 px-2" href="{{ route('todo', $todo->id) }}">
                             <x-lucide-pencil class="size-4 text-muted-foreground hover:text-foreground" />
                         </a>
                         <x-button variant="link" size="sm" class="p-1 px-2"
