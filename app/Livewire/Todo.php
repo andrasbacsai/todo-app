@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Todo as ModelTodo;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Usernotnull\Toast\Concerns\WireToast;
@@ -12,6 +13,7 @@ class Todo extends Component
 {
     use WireToast;
 
+    #[Title('Todo')]
     public ModelTodo $todo;
 
     #[Validate('required')]
