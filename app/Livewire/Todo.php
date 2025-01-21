@@ -53,13 +53,19 @@ class Todo extends Component
             'allow_unsafe_links' => false,
         ]);
 
+        // Remove wrapping paragraph tags and empty paragraphs
+        $html = preg_replace(['/^<p>/', '/<\/p>$/', '/<p>\s*<\/p>/'], '', $html);
+
         // Second pass: Replace our special format with proper checkbox HTML
         return preg_replace_callback(
             '/@@TASK_START@@(0|1)@@(.*)@@TASK_END@@/',
             function ($matches) {
+                static $lineNumber = 0;
+                $lineNumber++;
+
                 $checked = $matches[1] === '1' ? 'checked' : '';
                 $content = $matches[2];
-                $taskId = md5($content);
+                $taskId = md5($content.'_line_'.$lineNumber);
 
                 return "<div class=\"task-list-item-wrapper\"><div class=\"task-list-item\">
                     <input type=\"checkbox\" wire:model.live=\"taskStates.{$taskId}\" {$checked}>
@@ -77,9 +83,11 @@ class Todo extends Component
         }
 
         $lines = explode("\n", $this->description);
+        $lineNumber = 0;
         foreach ($lines as $i => $line) {
             if (preg_match('/^- \[([ x])\]( .*)?$/', $line, $matches)) {
-                if (md5(isset($matches[2]) ? trim($matches[2]) : '') === $taskId) {
+                $lineNumber++;
+                if (md5((isset($matches[2]) ? trim($matches[2]) : '').'_line_'.$lineNumber) === $taskId) {
                     $lines[$i] = '- ['.($value ? 'x' : ' ').']'.(isset($matches[2]) ? $matches[2] : '');
                     break;
                 }
@@ -100,9 +108,11 @@ class Todo extends Component
 
             // Initialize task states
             if ($this->description) {
+                $lineNumber = 0;
                 foreach (explode("\n", $this->description) as $line) {
                     if (preg_match('/^- \[([ x])\]( .*)?$/', $line, $matches)) {
-                        $taskId = md5(isset($matches[2]) ? trim($matches[2]) : '');
+                        $lineNumber++;
+                        $taskId = md5((isset($matches[2]) ? trim($matches[2]) : '').'_line_'.$lineNumber);
                         $this->taskStates[$taskId] = $matches[1] === 'x';
                     }
                 }

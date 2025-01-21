@@ -101,7 +101,7 @@ body {
 }
 
 .markdown-body {
-    @apply text-base leading-relaxed;
+    @apply text-sm;
 }
 
 .markdown-body h1 {
