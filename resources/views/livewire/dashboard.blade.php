@@ -2,8 +2,7 @@
     <div class="flex flex-col justify-center items-center">
         <div class="flex-1 w-full max-w-full lg:max-w-2xl">
             <x-form wire:submit="addTodo" :class="$backlogTodos->count() > 0 ? 'pb-10' : ''">
-                <x-form.input name="title" class="w-full" wire:model="title" placeholder="Enter task name" type="text"
-                    copy="false" label="" />
+                <livewire:forms.todo-input :title="$title" />
                 <x-button type="submit" class="hidden">Add todo</x-button>
             </x-form>
             <div class="flex flex-col space-y-2">
@@ -18,19 +17,28 @@
                                     {{ Str::limit($todo->description, 30) }}
                                 </p>
                             @endif
+                            <livewire:forms.hashtag-list :todo="$todo" :wire:key="'hashtags-'.$todo->id"
+                                :clickable="false" />
                         </a>
 
                         <div class="flex items-center space-x-4 gap-0">
-                            <div wire:click="switchTodoStatus('{{ $todo->id }}')"
-                                class="w-full text-right p-1 px-2 cursor-pointer group-hover:opacity-100 opacity-70 hover:bg-muted/50">
-                                <x-lucide-check-circle class="size-4 text-muted-foreground hover:text-foreground" />
-                            </div>
                             <x-tooltip>
                                 <x-tooltip.trigger>
                                     <x-button size="sm" variant="link"
-                                        class="text-muted-foreground hover:text-destructive p-1 px-2 group-hover:opacity-100 opacity-70"
+                                        class=" p-1 px-2 group-hover:opacity-100 opacity-70 text-muted-foreground hover:text-green-500"
+                                        wire:click="switchTodoStatus('{{ $todo->id }}')"><x-lucide-check-circle
+                                            class="size-4" /></x-button>
+                                </x-tooltip.trigger>
+                                <x-tooltip.content>
+                                    <p>Mark as done</p>
+                                </x-tooltip.content>
+                            </x-tooltip>
+                            <x-tooltip>
+                                <x-tooltip.trigger>
+                                    <x-button size="sm" variant="link"
+                                        class="text-muted-foreground hover:text-foreground p-1 px-2 group-hover:opacity-100 opacity-70"
                                         wire:click="addToDump('{{ $todo->id }}')"><x-lucide-alarm-clock-minus
-                                            class="size-4 text-muted-foreground hover:text-foreground" /></x-button>
+                                            class="size-4" /></x-button>
                                 </x-tooltip.trigger>
                                 <x-tooltip.content>
                                     <p>Add to dump</p>
@@ -87,9 +95,15 @@
                                     <div class="flex justify-between items-center px-2 py-1 cursor-pointer hover:bg-muted/50 transition-all duration-150"
                                         wire:key="yesterday-todo-{{ $todo->id }}"
                                         wire:click="transferYesterdayTodos('{{ $todo->id }}')">
-                                        {{ $todo->title }} {{ $todo->worked_at }}
+                                        {{ $todo->title }}
                                     </div>
                                 @endforeach
+                                <div class="flex justify-end px-2 py-2">
+                                    <x-button size="sm" variant="outline" wire:click="transferAllYesterdayTodos">
+                                        <x-lucide-alarm-clock-plus class="size-4 mr-2" />
+                                        Add all to today
+                                    </x-button>
+                                </div>
                             </div>
                         </x-accordion.content>
                     </x-accordion.item>

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Events\TodoUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Auth;
 
 class Todo extends Model
@@ -14,6 +15,8 @@ class Todo extends Model
     const MAX_DESCRIPTION_LENGTH = 10000; // 10KB limit for markdown content
 
     protected $fillable = ['title', 'status', 'description', 'user_id', 'worked_at'];
+
+    protected $with = ['hashtags'];
 
     protected static function boot()
     {
@@ -31,9 +34,19 @@ class Todo extends Model
                 broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
             }
         });
-        static::deleted(function () {
+        static::deleted(function ($todo) {
             if (Auth::check()) {
                 broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
+            }
+            
+            // Get the hashtags associated with this todo
+            $hashtags = $todo->hashtags;
+            
+            // For each hashtag, check if it's used by any other todo
+            foreach ($hashtags as $hashtag) {
+                if ($hashtag->todos()->count() <= 1) { // 1 because the relationship still exists at this point
+                    $hashtag->delete();
+                }
             }
         });
     }
@@ -43,19 +56,87 @@ class Todo extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function hashtags(): BelongsToMany
+    {
+        return $this->belongsToMany(Hashtag::class)->withTimestamps();
+    }
+
+    public static function extractHashtags(string $title): array
+    {
+        preg_match_all('/#(\w+)/', $title, $matches);
+
+        return $matches[1];
+    }
+
+    public static function cleanTitle(string $title): string
+    {
+        return trim(preg_replace('/#\w+/', '', $title));
+    }
+
+    public function syncHashtags(?string $title = null): void
+    {
+        if (! $title) {
+            return;
+        }
+
+        preg_match_all('/#([\w\-]+)/', $title, $matches);
+        $hashtags = $matches[1];
+
+        if (empty($hashtags)) {
+            // Get the hashtags that are about to be detached
+            $hashtagsToCheck = $this->hashtags;
+            $this->hashtags()->detach();
+
+            // Check each detached hashtag and delete if no other todo uses it
+            foreach ($hashtagsToCheck as $hashtag) {
+                if ($hashtag->todos()->count() === 0) {
+                    $hashtag->delete();
+                }
+            }
+            return;
+        }
+
+        $existingHashtags = Hashtag::where('user_id', Auth::id())
+            ->whereIn('name', $hashtags)
+            ->get();
+
+        $newHashtags = collect($hashtags)
+            ->diff($existingHashtags->pluck('name'))
+            ->map(fn ($name) => Hashtag::create([
+                'name' => $name,
+                'user_id' => Auth::id(),
+            ]));
+
+        // Get the new set of hashtag IDs
+        $newHashtagIds = $existingHashtags->merge($newHashtags)->pluck('id')->toArray();
+
+        // Find hashtags that will be detached
+        $hashtagsToCheck = $this->hashtags()->whereNotIn('hashtags.id', $newHashtagIds)->get();
+        
+        // Perform the sync
+        $this->hashtags()->syncWithoutDetaching($newHashtagIds);
+
+        // Check and delete unused hashtags
+        foreach ($hashtagsToCheck as $hashtag) {
+            if ($hashtag->todos()->count() === 0) {
+                $hashtag->delete();
+            }
+        }
+    }
+
     public static function getOwnTodo($id)
     {
-        return self::where('user_id', auth()->user()->id)->findOrFail($id);
+        return self::where('user_id', Auth::id())->findOrFail($id);
     }
 
     public static function getAllTodos()
     {
-        return self::where('user_id', auth()->user()->id)->get();
+        return self::where('user_id', Auth::id())->get();
     }
 
     public static function getAllTodosExceptToday()
     {
-        return self::where('user_id', auth()->user()->id)
+        return self::where('user_id', Auth::id())
             ->where(function ($query) {
                 $query->where('worked_at', '<', now()->startOfDay())
                     ->orWhereNull('worked_at');
@@ -66,17 +147,17 @@ class Todo extends Model
 
     public static function getTodayTodos()
     {
-        return self::where('user_id', auth()->user()->id)->where('worked_at', '>=', now()->startOfDay())->where('worked_at', '<=', now()->endOfDay())->get();
+        return self::where('user_id', Auth::id())->where('worked_at', '>=', now()->startOfDay())->where('worked_at', '<=', now()->endOfDay())->get();
     }
 
     public static function getBacklogTodos()
     {
-        return self::where('user_id', auth()->user()->id)->where('status', '!=', 'completed')->get();
+        return self::where('user_id', Auth::id())->where('status', '!=', 'completed')->get();
     }
 
     public static function getYesterdayUndoneTodos()
     {
-        return self::where('user_id', auth()->user()->id)
+        return self::where('user_id', Auth::id())
             ->where(function ($query) {
                 $query->where('worked_at', '>=', now()->subDay(1)->startOfDay())
                     ->where('worked_at', '<=', now()->subDay(1)->endOfDay());
@@ -87,7 +168,7 @@ class Todo extends Model
 
     public static function updateTodo($id, $data)
     {
-        $todo = self::where('user_id', auth()->user()->id)->where('id', $id)->first();
+        $todo = self::where('user_id', Auth::id())->where('id', $id)->first();
         if (! $todo) {
             return false;
         }
@@ -111,10 +192,13 @@ class Todo extends Model
         return \Illuminate\Database\Eloquent\Casts\Attribute::make(
             get: fn ($value) => $value ? base64_decode($value) : null,
             set: function ($value) {
-                if ($value === null) return null;
-                if (strlen($value) > self::MAX_DESCRIPTION_LENGTH) {
-                    throw new \Exception('Description is too long. Maximum length is ' . self::MAX_DESCRIPTION_LENGTH . ' characters.');
+                if ($value === null) {
+                    return null;
                 }
+                if (strlen($value) > self::MAX_DESCRIPTION_LENGTH) {
+                    throw new \Exception('Description is too long. Maximum length is '.self::MAX_DESCRIPTION_LENGTH.' characters.');
+                }
+
                 return base64_encode($value);
             }
         );

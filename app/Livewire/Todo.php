@@ -2,7 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Events\TodoUpdated;
+use App\Models\Hashtag;
 use App\Models\Todo as ModelTodo;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -26,10 +29,72 @@ class Todo extends Component
 
     public $taskStates = [];
 
+    public $hashtagSuggestions = [];
+
+    public $showHashtagSuggestions = false;
+
+    public function getListeners()
+    {
+        return [
+            'title-updated' => 'updateTitle',
+            'todo-input-submit' => 'updateTodo',
+            'hashtags-updated' => '$refresh',
+        ];
+    }
+
+    public function updateTitle($title)
+    {
+        $this->title = $title;
+    }
+
     public function updatedDescription($value)
     {
         $this->todo->update(['description' => $value]);
         $this->dispatch('description-updated');
+    }
+
+    public function updatedTitle($value)
+    {
+        $this->updateHashtagSuggestions($value);
+    }
+
+    protected function updateHashtagSuggestions($value)
+    {
+        // Find the hashtag being typed
+        $position = strrpos($value, '#');
+        if ($position === false) {
+            $this->hashtagSuggestions = [];
+            $this->showHashtagSuggestions = false;
+
+            return;
+        }
+
+        $query = substr($value, $position + 1);
+        if (empty($query)) {
+            $this->hashtagSuggestions = [];
+            $this->showHashtagSuggestions = false;
+
+            return;
+        }
+
+        // Only show suggestions if we're actually typing a hashtag
+        if (preg_match('/^[\w\-]+$/', $query)) {
+            $this->hashtagSuggestions = Hashtag::search($query);
+            $this->showHashtagSuggestions = ! empty($this->hashtagSuggestions);
+        } else {
+            $this->hashtagSuggestions = [];
+            $this->showHashtagSuggestions = false;
+        }
+    }
+
+    public function selectHashtag($hashtag)
+    {
+        // Replace the current hashtag being typed with the selected one
+        $position = strrpos($this->title, '#');
+        if ($position !== false) {
+            $this->title = substr($this->title, 0, $position).'#'.$hashtag.' ';
+        }
+        $this->showHashtagSuggestions = false;
     }
 
     protected function renderMarkdown($text)
@@ -124,14 +189,23 @@ class Todo extends Component
         }
     }
 
-    public function updateTodo()
+    public function updateTodo($title = null)
     {
         try {
             $this->validate();
             $this->todo->update([
-                'title' => $this->title,
+                'title' => ModelTodo::cleanTitle($title ?? $this->title),
                 'description' => $this->description,
             ]);
+            $this->todo->syncHashtags($title ?? $this->title);
+
+            // Refresh the todo data to update the UI
+            $this->todo = ModelTodo::getOwnTodo($this->todo->id);
+            $this->title = $this->todo->title;
+
+            // Broadcast the update to other components
+            broadcast(new TodoUpdated(Auth::id()))->toOthers();
+            $this->dispatch('hashtags-updated');
             toast()->success('Todo updated')->push();
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
