@@ -6,7 +6,6 @@
     autoSaveEnabled: @js($autoSaveEnabled),
 
     init() {
-        console.log(this.autoSaveEnabled);
         if (this.initialTitle) {
             this.title = this.initialTitle;
         }
