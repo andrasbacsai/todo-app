@@ -11,7 +11,7 @@
                         wire:key="todo-{{ $todo->id }}">
                         <a href="{{ route('todo', $todo->id) }}" wire:navigate
                             class="w-full cursor-pointer select-none px-2  hover:bg-muted/50">
-                            <p>{{ $todo->title }}</p>
+                            <p>{{ Str::limit($todo->title, 50) }}</p>
                             @if (filled($todo->description))
                                 <p class="text-muted-foreground text-xs min-h-4">
                                     {{ Str::limit($todo->description, 30) }}

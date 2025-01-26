@@ -3,8 +3,10 @@
     initialTitle: @js($title),
     timeout: null,
     isTypingHashtag: false,
+    autoSaveEnabled: @js($autoSaveEnabled),
 
     init() {
+        console.log(this.autoSaveEnabled);
         if (this.initialTitle) {
             this.title = this.initialTitle;
         }
@@ -30,6 +32,10 @@
     },
 
     autoSave() {
+        if (!this.autoSaveEnabled) {
+            return;
+        }
+
         const lastChar = this.title.slice(-1);
 
         if (this.title.match(/#[\w\-]*$/)) {

@@ -1,7 +1,8 @@
 <div>
     <div class="flex flex-col justify-center items-center">
         <div class="flex-1 w-full max-w-full lg:max-w-2xl">
-            <livewire:forms.todo-input target="handleSubmit" :title="$todo->title" mode="edit" :todoId="$todo->id" />
+            <livewire:forms.todo-input :autoSaveEnabled="true" target="handleSubmit" :title="$todo->title" mode="edit"
+                :todoId="$todo->id" />
             <form class="flex flex-col space-y-2 py-2" wire:submit="updateTodo">
                 <div class="flex flex-col space-y-1">
                     <livewire:forms.hashtag-list :todo="$todo" />
