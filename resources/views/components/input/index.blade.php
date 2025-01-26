@@ -2,16 +2,28 @@
     'type' => 'text',
     'timeout' => 2000,
     'copy' => true,
+    'target' => null,
 ])
 
 <div {{ $attributes->only(['class'])->filter(fn($class) => str_contains($class, 'col-span') || str_contains($class, 'row-span'))->merge(['class' => 'relative w-full']) }}
     x-data="{
         showPassword: false,
         inputType: '{{ $type }}',
-        copied: false
+        copied: false,
+        target: '{{ $target }}'
     }">
     <input :type="showPassword && inputType === 'password' ? 'text' : inputType"
         {{ $attributes->twMerge('flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 dark:bg-input-background file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 read-only:cursor-not-allowed read-only:opacity-50 text-foreground') }} />
+    @if ($target)
+        <div class="absolute bottom-2.5 right-2 flex items-center">
+            <div class="text-muted-foreground" wire:loading.remove wire:target="{{ $target }}">
+                <x-lucide-check class="size-4" />
+            </div>
+            <div class="text-muted-foreground" wire:loading wire:target="{{ $target }}">
+                <x-lucide-loader-2 class="size-4 animate-spin" />
+            </div>
+        </div>
+    @endif
     @if ($type === 'password')
         <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3" tabindex="-1"
             x-on:click="showPassword = !showPassword">

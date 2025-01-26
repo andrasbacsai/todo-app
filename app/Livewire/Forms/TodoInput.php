@@ -3,7 +3,6 @@
 namespace App\Livewire\Forms;
 
 use App\Events\TodoUpdated;
-use App\Models\Hashtag;
 use App\Models\Todo;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
@@ -22,34 +21,22 @@ class TodoInput extends Component
 
     public $todoId = null;
 
-    public $allHashtags = [];
+    public $target = null;
 
-    public function mount($title = '', $isDump = false, $mode = 'create', $todoId = null)
+    public function mount($title = '', $isDump = false, $mode = 'create', $todoId = null, $target = null)
     {
         $this->title = $title;
         $this->isDump = $isDump;
         $this->mode = $mode;
         $this->todoId = $todoId;
-        $this->loadHashtags();
-    }
-
-    public function loadHashtags()
-    {
-        $this->allHashtags = Hashtag::where('user_id', Auth::id())->pluck('name')->toArray();
+        $this->target = $target;
     }
 
     public function getListeners()
     {
         return [
             'todo-saved' => 'resetInput',
-            'hashtags-updated' => 'loadHashtags',
         ];
-    }
-
-    public function refreshHashtags()
-    {
-        $this->loadHashtags();
-        $this->dispatch('$refresh');
     }
 
     public function resetInput()
@@ -57,7 +44,6 @@ class TodoInput extends Component
         if ($this->mode === 'create') {
             $this->title = '';
         }
-        $this->loadHashtags();
     }
 
     public function handleSubmit($title)
@@ -76,7 +62,6 @@ class TodoInput extends Component
                     'title' => Todo::cleanTitle($title),
                 ]);
                 $todo->syncHashtags($title);
-                $this->loadHashtags();
                 $this->dispatch('hashtags-updated');
             } else {
                 $todo = Todo::create([
@@ -84,7 +69,6 @@ class TodoInput extends Component
                     'worked_at' => $this->isDump ? null : now(),
                 ]);
                 $todo->syncHashtags($title);
-                $this->loadHashtags();
                 $this->dispatch('hashtags-updated');
             }
 
@@ -98,8 +82,6 @@ class TodoInput extends Component
 
     public function render()
     {
-        return view('livewire.forms.todo-input', [
-            'allHashtags' => $this->allHashtags,
-        ]);
+        return view('livewire.forms.todo-input');
     }
 }

@@ -3,6 +3,7 @@
     'label' => 'Label',
     'descriptionTrailing' => '',
     'copy' => true,
+    'target' => null,
 ])
 
 <x-form.item>
@@ -11,8 +12,7 @@
             {{ $label }}
         </x-form.label>
     @endif
-
-    <x-input :copy="$copy" type="{{ $type }}" x-form:control {{ $attributes }} />
+    <x-input :target="$target" :copy="$copy" type="{{ $type }}" x-form:control {{ $attributes }} />
 
     @if ($descriptionTrailing)
         <x-form.description>

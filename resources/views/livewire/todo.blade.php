@@ -1,10 +1,7 @@
 <div>
     <div class="flex flex-col justify-center items-center">
         <div class="flex-1 w-full max-w-full lg:max-w-2xl">
-            <x-form wire:submit="updateTodo">
-                <livewire:forms.todo-input :title="$todo->title" mode="edit" :todoId="$todo->id" />
-                <x-button type="submit" class="hidden">Update todo</x-button>
-            </x-form>
+            <livewire:forms.todo-input target="handleSubmit" :title="$todo->title" mode="edit" :todoId="$todo->id" />
             <form class="flex flex-col space-y-2 py-2" wire:submit="updateTodo">
                 <div class="flex flex-col space-y-1">
                     <livewire:forms.hashtag-list :todo="$todo" />
@@ -16,10 +13,9 @@
                         </div>
                     @endif
                     <div class="h-full">
-                        <x-textarea loading="true" target="description" copy="false"
-                            wire:model.live.debounce.500ms="description" type="text" label=""
-                            @keydown.ctrl.enter="$wire.$refs.saveButton.click()" x-init="$el.focus();
-                            $el.style.overflow = 'hidden';
+                        <x-textarea target="description" copy="false" wire:model.live.debounce.500ms="description"
+                            type="text" label="" @keydown.ctrl.enter="$wire.$refs.saveButton.click()"
+                            x-init="$el.style.overflow = 'hidden';
                             const adjustHeight = () => {
                                 requestAnimationFrame(() => {
                                     $el.style.height = 'auto';
@@ -37,8 +33,8 @@
                             
                             // Additional hooks for other Livewire events
                             document.addEventListener('livewire:update', adjustHeight);
-                            document.addEventListener('livewire:load', adjustHeight);"
-                            style="min-height: 200px; resize: none;" placeholder="Write your markdown here..."
+                            document.addEventListener('livewire:load', adjustHeight);" style="min-height: 200px; resize: none;"
+                            placeholder="Write your markdown here..."
                             x-on:keydown.enter="
                                 const textarea = $el;
                                 const start = textarea.selectionStart;
