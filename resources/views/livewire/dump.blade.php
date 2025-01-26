@@ -11,7 +11,7 @@
                         wire:key="todo-{{ $todo->id }}">
                         <a href="{{ route('todo', $todo->id) }}" wire:navigate
                             class="w-full cursor-pointer select-none px-2 hover:bg-muted/50">
-                            <p>{{ $todo->title }}</p>
+                            <p>{{ Str::limit($todo->title, 50) }}</p>
                             <livewire:forms.hashtag-list :todo="$todo" :wire:key="'hashtags-'.$todo->id"
                                 :clickable="false" />
                             @if (filled($todo->description))
