@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Events\TodoUpdated;
-use App\Models\Hashtag;
 use App\Models\Todo as ModelTodo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -29,10 +28,6 @@ class Todo extends Component
 
     public $taskStates = [];
 
-    public $hashtagSuggestions = [];
-
-    public $showHashtagSuggestions = false;
-
     public function getListeners()
     {
         return [
@@ -51,50 +46,6 @@ class Todo extends Component
     {
         $this->todo->update(['description' => $value]);
         $this->dispatch('description-updated');
-    }
-
-    public function updatedTitle($value)
-    {
-        $this->updateHashtagSuggestions($value);
-    }
-
-    protected function updateHashtagSuggestions($value)
-    {
-        // Find the hashtag being typed
-        $position = strrpos($value, '#');
-        if ($position === false) {
-            $this->hashtagSuggestions = [];
-            $this->showHashtagSuggestions = false;
-
-            return;
-        }
-
-        $query = substr($value, $position + 1);
-        if (empty($query)) {
-            $this->hashtagSuggestions = [];
-            $this->showHashtagSuggestions = false;
-
-            return;
-        }
-
-        // Only show suggestions if we're actually typing a hashtag
-        if (preg_match('/^[\w\-]+$/', $query)) {
-            $this->hashtagSuggestions = Hashtag::search($query);
-            $this->showHashtagSuggestions = ! empty($this->hashtagSuggestions);
-        } else {
-            $this->hashtagSuggestions = [];
-            $this->showHashtagSuggestions = false;
-        }
-    }
-
-    public function selectHashtag($hashtag)
-    {
-        // Replace the current hashtag being typed with the selected one
-        $position = strrpos($this->title, '#');
-        if ($position !== false) {
-            $this->title = substr($this->title, 0, $position).'#'.$hashtag.' ';
-        }
-        $this->showHashtagSuggestions = false;
     }
 
     protected function renderMarkdown($text)

@@ -2,8 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Events\TodoUpdated;
-use App\Models\Hashtag;
 use App\Models\Todo;
 use App\Settings\InstanceSettings;
 use Illuminate\Support\Facades\Auth;
@@ -41,10 +39,6 @@ class Dashboard extends Component
     public $editingTitle = '';
 
     public $editingDescription = '';
-
-    public $hashtagSuggestions = [];
-
-    public $showHashtagSuggestions = false;
 
     public function getListeners()
     {
@@ -191,7 +185,6 @@ class Dashboard extends Component
 
     public function render()
     {
-
         return view('livewire.dashboard');
     }
 
@@ -199,50 +192,6 @@ class Dashboard extends Component
     public function completedCount()
     {
         return $this->completedTodos->count();
-    }
-
-    public function updatedTitle($value)
-    {
-        $this->updateHashtagSuggestions($value);
-    }
-
-    protected function updateHashtagSuggestions($value)
-    {
-        // Find the hashtag being typed
-        $position = strrpos($value, '#');
-        if ($position === false) {
-            $this->hashtagSuggestions = [];
-            $this->showHashtagSuggestions = false;
-
-            return;
-        }
-
-        $query = substr($value, $position + 1);
-        if (empty($query)) {
-            $this->hashtagSuggestions = [];
-            $this->showHashtagSuggestions = false;
-
-            return;
-        }
-
-        // Only show suggestions if we're actually typing a hashtag
-        if (preg_match('/^[\w\-]+$/', $query)) {
-            $this->hashtagSuggestions = Hashtag::search($query);
-            $this->showHashtagSuggestions = ! empty($this->hashtagSuggestions);
-        } else {
-            $this->hashtagSuggestions = [];
-            $this->showHashtagSuggestions = false;
-        }
-    }
-
-    public function selectHashtag($hashtag)
-    {
-        // Replace the current hashtag being typed with the selected one
-        $position = strrpos($this->title, '#');
-        if ($position !== false) {
-            $this->title = substr($this->title, 0, $position).'#'.$hashtag.' ';
-        }
-        $this->showHashtagSuggestions = false;
     }
 
     public function transferAllYesterdayTodos()

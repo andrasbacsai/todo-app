@@ -16,8 +16,9 @@
                         </div>
                     @endif
                     <div class="h-full">
-                        <x-textarea copy="false" wire:model.live.debounce.500ms="description" type="text"
-                            label="" @keydown.ctrl.enter="$wire.$refs.saveButton.click()" x-init="$el.focus();
+                        <x-textarea loading="true" target="description" copy="false"
+                            wire:model.live.debounce.500ms="description" type="text" label=""
+                            @keydown.ctrl.enter="$wire.$refs.saveButton.click()" x-init="$el.focus();
                             $el.style.overflow = 'hidden';
                             const adjustHeight = () => {
                                 requestAnimationFrame(() => {
@@ -93,24 +94,6 @@
                                 }
                             "
                             class="h-full min-h-[200px]" />
-                    </div>
-                </div>
-                <div class="flex items-center justify-between space-x-2">
-                    <div class="w-8 h-4">
-                        <div class="text-muted-foreground" wire:loading.remove wire:target="description">
-                            <x-lucide-check class="size-4" />
-                        </div>
-                        <div class="text-muted-foreground" wire:loading wire:target="description">
-                            <x-lucide-loader-2 class="size-4 animate-spin" />
-                        </div>
-                    </div>
-                    <div class="flex  items-center space-x-2">
-                        <x-switch wire:click="$toggle('showPreview')" id="showPreview"
-                            class="dark:has-[:checked]:bg-warning rounded-lg" wire:model="showPreview" />
-                        <x-label htmlFor="showPreview"
-                            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Show Preview
-                        </x-label>
                     </div>
                 </div>
             </form>

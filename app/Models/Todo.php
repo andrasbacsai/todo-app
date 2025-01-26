@@ -38,10 +38,10 @@ class Todo extends Model
             if (Auth::check()) {
                 broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
             }
-            
+
             // Get the hashtags associated with this todo
             $hashtags = $todo->hashtags;
-            
+
             // For each hashtag, check if it's used by any other todo
             foreach ($hashtags as $hashtag) {
                 if ($hashtag->todos()->count() <= 1) { // 1 because the relationship still exists at this point
@@ -58,7 +58,7 @@ class Todo extends Model
 
     public function hashtags(): BelongsToMany
     {
-        return $this->belongsToMany(Hashtag::class)->withTimestamps();
+        return $this->belongsToMany(Hashtag::class)->withTimestamps()->orderBy('name');
     }
 
     public static function extractHashtags(string $title): array
@@ -82,45 +82,29 @@ class Todo extends Model
         preg_match_all('/#([\w\-]+)/', $title, $matches);
         $hashtags = $matches[1];
 
-        if (empty($hashtags)) {
-            // Get the hashtags that are about to be detached
-            $hashtagsToCheck = $this->hashtags;
-            $this->hashtags()->detach();
-
-            // Check each detached hashtag and delete if no other todo uses it
-            foreach ($hashtagsToCheck as $hashtag) {
-                if ($hashtag->todos()->count() === 0) {
-                    $hashtag->delete();
-                }
-            }
+        // If no hashtags in the title and we're not in edit mode (no existing hashtags), just return
+        if (empty($hashtags) && ! $this->exists) {
             return;
         }
 
-        $existingHashtags = Hashtag::where('user_id', Auth::id())
-            ->whereIn('name', $hashtags)
-            ->get();
+        // If there are hashtags in the title, sync them
+        if (! empty($hashtags)) {
+            $existingHashtags = Hashtag::where('user_id', Auth::id())
+                ->whereIn('name', $hashtags)
+                ->get();
 
-        $newHashtags = collect($hashtags)
-            ->diff($existingHashtags->pluck('name'))
-            ->map(fn ($name) => Hashtag::create([
-                'name' => $name,
-                'user_id' => Auth::id(),
-            ]));
+            $newHashtags = collect($hashtags)
+                ->diff($existingHashtags->pluck('name'))
+                ->map(fn ($name) => Hashtag::create([
+                    'name' => $name,
+                    'user_id' => Auth::id(),
+                ]));
 
-        // Get the new set of hashtag IDs
-        $newHashtagIds = $existingHashtags->merge($newHashtags)->pluck('id')->toArray();
+            // Get the new set of hashtag IDs
+            $newHashtagIds = $existingHashtags->merge($newHashtags)->pluck('id')->toArray();
 
-        // Find hashtags that will be detached
-        $hashtagsToCheck = $this->hashtags()->whereNotIn('hashtags.id', $newHashtagIds)->get();
-        
-        // Perform the sync
-        $this->hashtags()->syncWithoutDetaching($newHashtagIds);
-
-        // Check and delete unused hashtags
-        foreach ($hashtagsToCheck as $hashtag) {
-            if ($hashtag->todos()->count() === 0) {
-                $hashtag->delete();
-            }
+            // Perform the sync without detaching existing hashtags
+            $this->hashtags()->syncWithoutDetaching($newHashtagIds);
         }
     }
 
