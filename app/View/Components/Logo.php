@@ -21,8 +21,8 @@ class Logo extends Component
     public function render(): View|Closure|string
     {
         return <<<'blade'
-<div>
-    <img src="https://coolify.io/coolify-transparent.svg" alt="coolLabs" class="size-{{ $size }}">
+<div class="size-{{ $size }}">
+    <img src="{{ asset('jata.png') }}" alt="Jata">
 </div>
 blade;
     }

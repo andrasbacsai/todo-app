@@ -20,7 +20,6 @@
                             <livewire:forms.hashtag-list :todo="$todo" :wire:key="'hashtags-'.$todo->id"
                                 :clickable="false" />
                         </a>
-
                         <div class="flex items-center space-x-4 gap-0">
                             <x-tooltip>
                                 <x-tooltip.trigger>

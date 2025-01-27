@@ -7,7 +7,7 @@
 
     <title>{{ $title ?? 'Template' }}</title>
 
-    <link rel="icon" type="image/x-icon" href="https://coolify.io/coolify-transparent.svg">
+    <link rel="icon" type="image/x-icon" href="{{ asset('jata.png') }}">
 
     <style>
         [x-cloak] {

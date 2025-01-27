@@ -73,7 +73,7 @@ class Dump extends Component
     public function addToToday($id)
     {
         try {
-            $todo = Todo::getAllTodos()->where('id', $id)->first();
+            $todo = Todo::getOwnTodo($id);
             $todo->worked_at = now();
             $todo->save();
             $this->refreshTodos();
@@ -97,7 +97,7 @@ class Dump extends Component
     public function updateTodo()
     {
         try {
-            $todo = Todo::find($this->editingTodoId);
+            $todo = Todo::getOwnTodo($this->editingTodoId);
             if (! $todo) {
                 throw new \Exception('Todo not found');
             }
