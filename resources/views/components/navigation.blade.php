@@ -9,7 +9,7 @@
         <div class="flex items-center gap-2 cursor-pointer" x-dropdown-menu:button>
             <x-avatar class="size-8">
                 {{-- <x-avatar.image src="https://github.com/andrasbacsai.png" /> --}}
-                <x-avatar.fallback>{{ auth()->user()->name[0] }}</x-avatar.fallback>
+                <x-avatar.fallback>{{ strtoupper(auth()->user()->name[0]) }}</x-avatar.fallback>
             </x-avatar>
         </div>
 
