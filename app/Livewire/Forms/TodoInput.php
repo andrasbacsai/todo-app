@@ -31,6 +31,9 @@ class TodoInput extends Component
     #[Locked]
     public $autoSaveEnabled = false;
 
+    #[Locked]
+    public ?string $regexHashtags = null;
+
     public function mount($title = '', $isDump = false, $mode = 'create', $todoId = null, $target = null, $autoSaveEnabled = false)
     {
         $this->title = $title;
@@ -39,6 +42,7 @@ class TodoInput extends Component
         $this->todoId = $todoId;
         $this->target = $target;
         $this->autoSaveEnabled = $autoSaveEnabled;
+        $this->regexHashtags = Todo::regexHashtags();
     }
 
     public function getListeners()
@@ -55,12 +59,10 @@ class TodoInput extends Component
         }
     }
 
-    public function handleSubmit($title)
+    public function handleSubmit()
     {
-        $this->title = $title;
-        $this->validate();
-
         try {
+            $this->validate();
             if ($this->mode === 'edit' && $this->todoId) {
                 $todo = Todo::find($this->todoId);
                 if (! $todo) {
@@ -68,16 +70,16 @@ class TodoInput extends Component
                 }
 
                 $todo->update([
-                    'title' => Todo::cleanTitle($title),
+                    'title' => Todo::cleanTitle($this->title),
                 ]);
-                $todo->syncHashtags($title);
+                $todo->syncHashtags($this->title);
                 $this->dispatch('hashtags-updated');
             } else {
                 $todo = Todo::create([
-                    'title' => Todo::cleanTitle($title),
+                    'title' => Todo::cleanTitle($this->title),
                     'worked_at' => $this->isDump ? null : now(),
                 ]);
-                $todo->syncHashtags($title);
+                $todo->syncHashtags($this->title);
                 $this->dispatch('hashtags-updated');
             }
 

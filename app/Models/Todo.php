@@ -61,16 +61,14 @@ class Todo extends Model
         return $this->belongsToMany(Hashtag::class)->withTimestamps()->orderBy('name');
     }
 
-    public static function extractHashtags(string $title): array
+    public static function regexHashtags(): string
     {
-        preg_match_all('/#(\w+)/', $title, $matches);
-
-        return $matches[1];
+        return '/#[a-zA-Z0-9][a-zA-Z0-9\-_]*(\s|$)/';
     }
 
     public static function cleanTitle(string $title): string
     {
-        return trim(preg_replace('/#\w+/', '', $title));
+        return trim(preg_replace(self::regexHashtags(), '', $title));
     }
 
     public function syncHashtags(?string $title = null): void
