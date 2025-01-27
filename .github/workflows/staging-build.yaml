@@ -1,4 +1,4 @@
-name: Production Build
+name: Next Build
 
 on:
   push:
