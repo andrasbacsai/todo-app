@@ -1,7 +1,7 @@
 <div class="min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md p-6">
         <x-typography.h1 class="text-center">
-            Todo
+            Jata
         </x-typography.h1>
         <x-form wire:submit="login" class="pt-4 space-y-4">
             <x-form.input wire:model="email" type="email" label="Email" />
