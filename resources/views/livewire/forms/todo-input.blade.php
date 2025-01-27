@@ -7,7 +7,7 @@
     errorMessage: '',
 
     cleanupHashtags(title) {
-        return title.replace(this.regexHashtags, ' ').trim();
+        return title.replace(this.regexHashtags, ' ');
     },
 
     handleSubmit() {
@@ -54,7 +54,7 @@
         if (!this.isTypingHashtag) {
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => {
-                    this.handleSubmit();
+                this.handleSubmit();
             }, 1000);
         }
     }
