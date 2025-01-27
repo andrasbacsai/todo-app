@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
         server: process.env.NODE_ENV === 'development' ? {
             host: '0.0.0.0',
             hmr: {
-                host: env.VITE_HMR_HOST || '0.0.0.0',
+                host: env.VITE_HOST || '0.0.0.0',
             },
         } : {},
 
