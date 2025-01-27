@@ -31,9 +31,6 @@ class TodoInput extends Component
     #[Locked]
     public $autoSaveEnabled = false;
 
-    #[Locked]
-    public ?string $regexHashtags = null;
-
     public function mount($title = '', $isDump = false, $mode = 'create', $todoId = null, $target = null, $autoSaveEnabled = false)
     {
         $this->title = $title;
@@ -42,7 +39,6 @@ class TodoInput extends Component
         $this->todoId = $todoId;
         $this->target = $target;
         $this->autoSaveEnabled = $autoSaveEnabled;
-        $this->regexHashtags = Todo::regexHashtags();
     }
 
     public function getListeners()

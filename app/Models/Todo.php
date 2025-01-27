@@ -111,11 +111,6 @@ class Todo extends Model
         return self::where('user_id', Auth::id())->findOrFail($id);
     }
 
-    public static function getAllTodos()
-    {
-        return self::where('user_id', Auth::id())->get();
-    }
-
     public static function getAllTodosExceptToday()
     {
         return self::where('user_id', Auth::id())
@@ -130,11 +125,6 @@ class Todo extends Model
     public static function getTodayTodos()
     {
         return self::where('user_id', Auth::id())->where('worked_at', '>=', now()->startOfDay())->where('worked_at', '<=', now()->endOfDay())->get();
-    }
-
-    public static function getBacklogTodos()
-    {
-        return self::where('user_id', Auth::id())->where('status', '!=', 'completed')->get();
     }
 
     public static function getYesterdayUndoneTodos()

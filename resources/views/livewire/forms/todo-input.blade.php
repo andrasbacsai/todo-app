@@ -1,24 +1,18 @@
 <div x-data="{
-    title: $wire.entangle('title').defer,
-    initialTitle: @js($title),
+    title: @js($title),
+    autoSaveEnabled: @js($autoSaveEnabled),
+    regexHashtags: /#[a-zA-Z0-9][a-zA-Z0-9\-_]*/g,
     timeout: null,
     isTypingHashtag: false,
-    regexHashtags: @js($regexHashtags),
-    autoSaveEnabled: @js($autoSaveEnabled),
     errorMessage: '',
-
-    init() {
-        if (this.initialTitle) {
-            this.title = this.initialTitle;
-        }
-    },
 
     cleanupHashtags(title) {
         return title.replace(this.regexHashtags, ' ').trim();
     },
 
     handleSubmit() {
-        const cleanTitle = this.cleanupHashtags(this.title).trim();
+        const cleanTitle = this.cleanupHashtags(this.title);
+
         // Don't submit if there's no actual content (only hashtags)
         if (!cleanTitle) {
             this.errorMessage = 'Title cannot be empty';
@@ -36,6 +30,7 @@
         }
         if ($wire.mode === 'edit') {
             $wire.dispatch('hashtags-updated');
+            this.title = cleanTitle;
         }
     },
 
@@ -48,6 +43,7 @@
 
         if (this.title.match(/#[a-zA-Z0-9][a-zA-Z0-9\-_]*$/)) {
             this.isTypingHashtag = true;
+            clearTimeout(this.timeout);
             return;
         }
 
@@ -58,10 +54,8 @@
         if (!this.isTypingHashtag) {
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => {
-                if (this.title !== this.initialTitle) {
                     this.handleSubmit();
-                }
-            }, 500);
+            }, 1000);
         }
     }
 }" class="relative">
