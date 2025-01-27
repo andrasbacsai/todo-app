@@ -2,7 +2,7 @@ name: Production Build
 
 on:
   push:
-    branches: [main]
+    branches: [next]
 
 env:
   GITHUB_REGISTRY: ghcr.io
