@@ -3,6 +3,9 @@
         <x-typography.h1 class="text-center">
             Jata
         </x-typography.h1>
+        <x-typography.muted class="text-center">
+            Just Another Todo App
+        </x-typography.muted>
         <x-form wire:submit="login" class="pt-4 space-y-4">
             <x-form.input wire:model="email" type="email" label="Email" />
             <x-form.input wire:model="password" type="password" label="Password" />
