@@ -22,7 +22,7 @@ class Logo extends Component
     {
         return <<<'blade'
 <div>
-    <img src="https://coolify.io/coolify-transparent.svg" alt="coolLabs" class="size-{{ $size }}">
+    <img src="{{ asset('jata.png') }}" alt="coolLabs" class="size-{{ $size }}">
 </div>
 blade;
     }
