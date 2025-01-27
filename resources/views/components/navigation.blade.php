@@ -1,6 +1,6 @@
 <div class="pb-4 flex items-center gap-2  mb-4">
     <a wire:navigate href="{{ route('dashboard') }}" class="flex items-center gap-2 text-md">
-        <x-logo size="8" /></a>
+        <x-logo size="6" /></a>
     <div class="flex-1"></div>
     <x-aside />
     <div class="flex-1">
