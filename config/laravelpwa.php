@@ -6,9 +6,9 @@ return [
         'name' => 'Jata',
         'short_name' => 'Jata',
         'start_url' => '/',
-        'background_color' => '#ffffff',
+        'background_color' => '#000000',
         'theme_color' => '#000000',
-        'display' => 'standalone',
+        'display' => 'fullscreen',
         'orientation' => 'any',
         'status_bar' => 'black',
         'icons' => [
