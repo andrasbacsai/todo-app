@@ -22,6 +22,7 @@
         "livewire/livewire": "3.5.12",
         "mallardduck/blade-lucide-icons": "^1.23",
         "opcodesio/log-viewer": "3.12.0",
+        "silviolleite/laravelpwa": "^2.0",
         "spatie/laravel-settings": "^3.4",
         "stripe/stripe-php": "16.2.0",
         "usernotnull/tall-toasts": "^2.1"
