@@ -1,6 +1,3 @@
-<div
-    x-data
-    x-tooltip
->
+<div x-data x-tooltip>
     {{ $slot }}
 </div>
