@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
 
         plugins: [
             laravel({
-                input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/inertia.js'],
+                input: ['resources/css/app.css', 'resources/js/app.js'],
                 refresh: true,
             }),
             vue({
