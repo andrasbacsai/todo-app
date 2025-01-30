@@ -12,6 +12,7 @@
         "fakerphp/faker": "1.24.0",
         "feature-ninja/cva": "^0.3.0",
         "gehrisandro/tailwind-merge-laravel": "^1.2",
+        "inertiajs/inertia-laravel": "^2.0",
         "laravel/cashier": "^15.6",
         "laravel/fortify": "1.24.5",
         "laravel/framework": "11.33.2",
@@ -25,6 +26,7 @@
         "silviolleite/laravelpwa": "^2.0",
         "spatie/laravel-settings": "^3.4",
         "stripe/stripe-php": "16.2.0",
+        "tightenco/ziggy": "^2.5",
         "usernotnull/tall-toasts": "^2.1"
     },
     "require-dev": {

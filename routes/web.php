@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\EnsureInstanceAdmin;
 use App\Http\Middleware\EnsurePaymentRoutesRegistered;
 use App\Http\Middleware\EnsureSubscription;
@@ -18,6 +19,11 @@ use Laravel\Cashier\Cashier;
 
 Route::get('/login', Login::class)->name('login');
 Route::get('/register', Register::class)->name('register');
+
+Route::group(['middleware' => 'auth', 'prefix' => 'i'], function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::post('/', [DashboardController::class, 'store'])->name('dashboard.store');
+});
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', Dashboard::class)->name('dashboard');
