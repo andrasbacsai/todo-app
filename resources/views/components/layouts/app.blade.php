@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <meta name="title" content="Jata: Just Another Todo App, nothing more." />
-    <meta name="description" content="Just Another Todo App, nothing more." />
+    <meta name="title" content="Jata: Just Another Todo App." />
+    <meta name="description" content="Nothing more." />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jata.app" />
