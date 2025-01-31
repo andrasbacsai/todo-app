@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Billable;
 
 use function Illuminate\Events\queueable;
@@ -22,6 +23,49 @@ class User extends Authenticatable
                 $user->name = str($user->email)->before('@')->value();
             }
         });
+
+        static::created(function (User $user) {
+            try {
+                Todo::create([
+                    'title' => 'Welcome to the app!',
+                    'worked_at' => now(),
+                    'user_id' => $user->id,
+                ]);
+                Todo::create([
+                    'title' => 'You can use hashtags to group your todos. #importantproject',
+                    'worked_at' => now(),
+                    'user_id' => $user->id,
+                ]);
+                Todo::create([
+                    'title' => 'Click on the dropdown icons to see other todos. 👇',
+                    'worked_at' => now(),
+                    'user_id' => $user->id,
+                ]);
+                Todo::create([
+                    'worked_at' => now()->subDay(),
+                    'title' => 'This should be done yesterday. Click on me to move it to today.',
+                    'user_id' => $user->id,
+                ]);
+                Todo::create([
+                    'title' => 'This is done. Well done!',
+                    'status' => 'completed',
+                    'worked_at' => now(),
+                    'user_id' => $user->id,
+                ]);
+                Todo::create([
+                    'title' => 'Should be done someday. Maybe today?',
+                    'worked_at' => null,
+                    'user_id' => $user->id,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Failed to create todos', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
+        });
+
         static::updated(queueable(function (User $customer) {
             if ($customer->hasStripeId()) {
                 $customer->syncStripeCustomerDetails();
@@ -92,5 +136,10 @@ class User extends Authenticatable
         }
 
         return null;
+    }
+
+    public function todos(): HasMany
+    {
+        return $this->hasMany(Todo::class);
     }
 }

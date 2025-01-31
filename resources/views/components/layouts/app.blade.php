@@ -46,23 +46,25 @@
             });
         </script>
         <div class="mx-auto px-4 sm:px-8 py-2 pt-4">
-            @php
-                $breadcrumbs = [];
-                $path = pathinfo(request()->url())['basename'];
-                if (Route::currentRouteName() === 'dashboard') {
-                    $breadcrumbs = ['Dashboard', 'General'];
-                }
-                if ($path === 'projects') {
-                    $breadcrumbs = ['Dashboard', 'Projects'];
-                }
-                if ($path === 'instance-settings') {
-                    $breadcrumbs = ['Instance Settings'];
-                }
-                if ($path === 'billing') {
-                    $breadcrumbs = ['Billing'];
-                }
-            @endphp
-            <x-navigation :breadcrumbs="$breadcrumbs" />
+            @persist('navigation')
+                @php
+                    $breadcrumbs = [];
+                    $path = pathinfo(request()->url())['basename'];
+                    if (Route::currentRouteName() === 'dashboard') {
+                        $breadcrumbs = ['Dashboard', 'General'];
+                    }
+                    if ($path === 'projects') {
+                        $breadcrumbs = ['Dashboard', 'Projects'];
+                    }
+                    if ($path === 'instance-settings') {
+                        $breadcrumbs = ['Instance Settings'];
+                    }
+                    if ($path === 'billing') {
+                        $breadcrumbs = ['Billing'];
+                    }
+                @endphp
+                <x-navigation :breadcrumbs="$breadcrumbs" />
+            @endpersist
             <div class="max-w-7xl mx-auto">
                 {{ $slot }}
             </div>

@@ -4,12 +4,12 @@
             <livewire:forms.todo-input :isDump="true" :title="$title" />
             <x-button type="submit" class="hidden">Add todo</x-button>
         </x-form>
-        <div class="flex flex-col space-y-2">
+        <div class="flex flex-col space-y-4">
             @forelse ($todos as $todo)
                 <div class="flex justify-between items-center px-2 group transition-all duration-150 space-x-2"
                     wire:key="todo-{{ $todo->id }}">
                     <a href="{{ route('todo', $todo->id) }}" wire:navigate
-                        class="w-full cursor-pointer select-none px-2 hover:bg-muted/50">
+                        class="w-full cursor-pointer select-none px-2 hover:border-primary hover:border-l-2 border-l-2 border-transparent">
                         <p>{{ Str::limit($todo->title, 50) }}</p>
                         @if (filled($todo->description))
                             <p class="text-muted-foreground text-xs min-h-4">

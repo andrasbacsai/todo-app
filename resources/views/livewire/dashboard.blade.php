@@ -1,15 +1,14 @@
 <div class="flex flex-col justify-center items-center">
     <div class="flex-1 w-full max-w-full lg:max-w-2xl">
-        <x-form wire:submit="addTodo" :class="$backlogTodos->count() > 0 ? 'pb-10' : ''">
+        <x-form wire:submit="addTodo" class="pb-10">
             <livewire:forms.todo-input :title="$title" />
             <x-button type="submit" class="hidden">Add todo</x-button>
         </x-form>
-        <div class="flex flex-col space-y-2">
+        <div class="flex flex-col space-y-4">
             @forelse ($backlogTodos as $todo)
-                <div class="flex justify-between items-center px-2 group transition-all duration-150"
-                    wire:key="todo-{{ $todo->id }}">
+                <div class="flex justify-between items-center px-2 group" wire:key="todo-{{ $todo->id }}">
                     <a href="{{ route('todo', $todo->id) }}" wire:navigate
-                        class="w-full cursor-pointer select-none px-2 hover:bg-muted/50">
+                        class="w-full cursor-pointer select-none px-2 hover:border-primary hover:border-l-2 border-l-2 border-transparent">
                         <p>{{ Str::limit($todo->title, 50) }}</p>
                         @if (filled($todo->description))
                             <p class="text-muted-foreground text-xs min-h-4">
@@ -64,12 +63,12 @@
                     <x-accordion.trigger class="hover:no-underline text-xs text-muted-foreground font-normal px-2">Show
                         {{ $this->completedCount }} completed tasks</x-accordion.trigger>
                     <x-accordion.content class="text-md">
-                        <div class="flex flex-col">
+                        <div class="flex flex-col px-2">
                             @foreach ($completedTodos as $todo)
-                                <div class="flex justify-between items-center px-2 py-1 cursor-pointer line-through hover:bg-muted/50 transition-all duration-150"
+                                <div class="flex justify-between items-center px-2 py-1 cursor-pointer line-through hover:border-primary hover:border-l-2 border-l-2 border-transparent  text-xs"
                                     wire:key="completed-todo-{{ $todo->id }}"
                                     wire:click="switchTodoStatus('{{ $todo->id }}')">
-                                    {{ $todo->title }}
+                                    {{ Str::limit($todo->title, 50) }}
                                 </div>
                             @endforeach
                         </div>
@@ -84,12 +83,12 @@
                         {{ $this->previousUndoneTodos->count() }} undone tasks from
                         yesterday</x-accordion.trigger>
                     <x-accordion.content class="text-md">
-                        <div class="flex flex-col">
+                        <div class="flex flex-col px-2">
                             @foreach ($previousUndoneTodos as $todo)
-                                <div class="flex justify-between items-center px-2 py-1 cursor-pointer hover:bg-muted/50 transition-all duration-150"
+                                <div class="flex justify-between items-center px-2 py-1 cursor-pointer hover:border-primary hover:border-l-2 border-l-2 border-transparent  text-xs"
                                     wire:key="yesterday-todo-{{ $todo->id }}"
                                     wire:click="transferYesterdayTodos('{{ $todo->id }}')">
-                                    {{ $todo->title }}
+                                    {{ Str::limit($todo->title, 50) }}
                                 </div>
                             @endforeach
                             <div class="flex justify-end px-2 py-2">

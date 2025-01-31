@@ -91,11 +91,10 @@ class Dashboard extends Component
     {
         try {
             $this->validate();
-            $todo = Todo::create([
-                'title' => Todo::cleanTitle($this->title),
+            Auth::user()->todos()->create([
+                'title' => $this->title,
                 'worked_at' => now(),
             ]);
-            $todo->syncHashtags($this->title);
             $this->title = '';
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
