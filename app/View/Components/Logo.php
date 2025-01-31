@@ -12,7 +12,6 @@ class Logo extends Component
      * Create a new component instance.
      */
     public function __construct(
-        public string $size = '6'
     ) {}
 
     /**
@@ -21,7 +20,7 @@ class Logo extends Component
     public function render(): View|Closure|string
     {
         return <<<'blade'
-<div class="size-{{ $size }}">
+<div class="size-6">
     <img src="{{ asset('jata.png') }}" alt="Jata">
 </div>
 blade;

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -23,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 Request::HEADER_X_FORWARDED_PROTO |
                 Request::HEADER_X_FORWARDED_AWS_ELB
         );
+            $middleware->web(append: [
+                HandleInertiaRequests::class,
+            ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {})
     ->withSchedule(function (Schedule $schedule) {})

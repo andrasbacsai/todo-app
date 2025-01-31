@@ -21,19 +21,31 @@ class Todo extends Model
     protected static function boot()
     {
         parent::boot();
-        static::updated(function () {
+
+        static::creating(function (Todo $todo) {
+            if (!$todo->user_id && Auth::check()) {
+                $todo->user_id = Auth::id();
+            }
+        });
+
+        static::updated(function (Todo $todo) {
+            $todo->syncHashtags();
+            $todo->title = self::cleanTitle((string) $todo->title);
+            $todo->saveQuietly();
             if (Auth::check()) {
                 broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
             }
         });
-        static::creating(function ($todo) {
-            $todo->user_id = Auth::user()->id;
-        });
-        static::created(function () {
+
+        static::created(function (Todo $todo) {
+            $todo->syncHashtags();
+            $todo->title = self::cleanTitle((string) $todo->title);
+            $todo->saveQuietly();
             if (Auth::check()) {
                 broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
             }
         });
+
         static::deleted(function ($todo) {
             if (Auth::check()) {
                 broadcast(new TodoUpdated(Auth::user()->id))->toOthers();
@@ -50,6 +62,11 @@ class Todo extends Model
             }
         });
     }
+
+    // public function setTitleAttribute($value)
+    // {
+    //     $this->attributes['title'] = Todo::cleanTitle($value);
+    // }
 
     public function user()
     {
@@ -71,13 +88,9 @@ class Todo extends Model
         return trim(preg_replace(self::regexHashtags(), '', $title));
     }
 
-    public function syncHashtags(?string $title = null): void
+    public function syncHashtags(): void
     {
-        if (! $title) {
-            return;
-        }
-
-        preg_match_all('/#([\w\-]+)/', $title, $matches);
+        preg_match_all('/#([\w\-]+)/', (string)$this->title, $matches);
         $hashtags = $matches[1];
 
         // If no hashtags in the title and we're not in edit mode (no existing hashtags), just return
@@ -87,7 +100,7 @@ class Todo extends Model
 
         // If there are hashtags in the title, sync them
         if (! empty($hashtags)) {
-            $existingHashtags = Hashtag::where('user_id', Auth::id())
+            $existingHashtags = Hashtag::where('user_id', $this->user_id)
                 ->whereIn('name', $hashtags)
                 ->get();
 
@@ -95,12 +108,11 @@ class Todo extends Model
                 ->diff($existingHashtags->pluck('name'))
                 ->map(fn ($name) => Hashtag::create([
                     'name' => $name,
-                    'user_id' => Auth::id(),
+                    'user_id' => $this->user_id,
                 ]));
 
             // Get the new set of hashtag IDs
             $newHashtagIds = $existingHashtags->merge($newHashtags)->pluck('id')->toArray();
-
             // Perform the sync without detaching existing hashtags
             $this->hashtags()->syncWithoutDetaching($newHashtagIds);
         }

@@ -45,7 +45,7 @@
         --card-foreground: 60 9.1% 97.8%;
         --popover: 20 14.3% 4.1%;
         --popover-foreground: 60 9.1% 97.8%;
-        --primary: 264 86% 51%;
+        --primary: 323 100% 70%;
         --primary-foreground: 0 0% 100%;
         --ring: var(--primary);
         --secondary: 12 6.5% 15.1%;
@@ -68,10 +68,7 @@
         --success: 142 76% 36%;
         --info: 207 90% 54%;
     }
-}
 
-
-@layer base {
     * {
         @apply border-border;
     }

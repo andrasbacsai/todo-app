@@ -62,5 +62,8 @@
     <x-form.input :target="$target" x-ref="input" name="title" class="w-full" x-model="title" :placeholder="$placeholder"
         type="text" copy="false" label="" x-on:keydown.enter.prevent="handleSubmit()" x-on:input="autoSave()"
         x-init="$el.focus();" />
-    <div x-show="errorMessage" x-text="errorMessage" class="text-red-500 text-sm mt-1"></div>
+    <template x-if="errorMessage">
+        <span x-text="errorMessage" class="text-red-500 text-sm mt-1">
+        </span>
+    </template>
 </div>

@@ -5,6 +5,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+    <meta name="title" content="Jata: Just Another Todo App." />
+    <meta name="description" content="Nothing more." />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jata.app" />
+    <meta property="og:title" content="Just another todo app" />
+    <meta property="og:description" content="Nothing more." />
+    <meta property="og:image" content="https://cdn.coollabs.io/assets/jata/og-image.png" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://jata.app" />
+    <meta property="twitter:title" content="Just another todo app" />
+    <meta property="twitter:description" content="Nothing more." />
+    <meta property="twitter:image" content="https://cdn.coollabs.io/assets/jata/og-image.png" />
+
     <title>{{ $title ?? 'Template' }}</title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('jata.png') }}">
@@ -26,6 +41,7 @@
         href="https://api.fonts.coollabs.io/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Roboto+Mono:wght@484&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
     @livewireStyles
+    @laravelPWA
 </head>
 
 <body>
@@ -45,23 +61,25 @@
             });
         </script>
         <div class="mx-auto px-4 sm:px-8 py-2 pt-4">
-            @php
-                $breadcrumbs = [];
-                $path = pathinfo(request()->url())['basename'];
-                if (Route::currentRouteName() === 'dashboard') {
-                    $breadcrumbs = ['Dashboard', 'General'];
-                }
-                if ($path === 'projects') {
-                    $breadcrumbs = ['Dashboard', 'Projects'];
-                }
-                if ($path === 'instance-settings') {
-                    $breadcrumbs = ['Instance Settings'];
-                }
-                if ($path === 'billing') {
-                    $breadcrumbs = ['Billing'];
-                }
-            @endphp
-            <x-navigation :breadcrumbs="$breadcrumbs" />
+            @persist('navigation')
+                @php
+                    $breadcrumbs = [];
+                    $path = pathinfo(request()->url())['basename'];
+                    if (Route::currentRouteName() === 'dashboard') {
+                        $breadcrumbs = ['Dashboard', 'General'];
+                    }
+                    if ($path === 'projects') {
+                        $breadcrumbs = ['Dashboard', 'Projects'];
+                    }
+                    if ($path === 'instance-settings') {
+                        $breadcrumbs = ['Instance Settings'];
+                    }
+                    if ($path === 'billing') {
+                        $breadcrumbs = ['Billing'];
+                    }
+                @endphp
+                <x-navigation :breadcrumbs="$breadcrumbs" />
+            @endpersist
             <div class="max-w-7xl mx-auto">
                 {{ $slot }}
             </div>

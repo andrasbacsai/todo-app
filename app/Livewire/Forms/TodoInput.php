@@ -60,26 +60,16 @@ class TodoInput extends Component
         try {
             $this->validate();
             if ($this->mode === 'edit' && $this->todoId) {
-                $todo = Todo::find($this->todoId);
-                if (! $todo) {
-                    throw new \Exception('Todo not found');
-                }
-
-                $todo->update([
-                    'title' => Todo::cleanTitle($this->title),
-                ]);
-                $todo->syncHashtags($this->title);
-                $this->dispatch('hashtags-updated');
+                $todo = Todo::getOwnTodo($this->todoId);
+                $todo->title = $this->title;
+                $todo->save();
             } else {
-                $todo = Todo::create([
-                    'title' => Todo::cleanTitle($this->title),
+                Todo::create([
+                    'title' => $this->title,
                     'worked_at' => $this->isDump ? null : now(),
                 ]);
-                $todo->syncHashtags($this->title);
-                $this->dispatch('hashtags-updated');
             }
-
-            broadcast(new TodoUpdated(Auth::id()))->toOthers();
+            $this->dispatch('hashtags-updated');
             $this->dispatch('todos-updated');
             $this->resetInput();
         } catch (\Exception $e) {
@@ -92,3 +82,4 @@ class TodoInput extends Component
         return view('livewire.forms.todo-input');
     }
 }
+

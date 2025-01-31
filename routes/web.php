@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\EnsureInstanceAdmin;
 use App\Http\Middleware\EnsurePaymentRoutesRegistered;
 use App\Http\Middleware\EnsureSubscription;

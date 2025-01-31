@@ -2,9 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Events\TodoUpdated;
 use App\Models\Todo as ModelTodo;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Validate;
@@ -140,24 +138,20 @@ class Todo extends Component
         }
     }
 
-    public function updateTodo($title = null)
+    public function updateTodo()
     {
         try {
             $this->validate();
             $this->todo->update([
-                'title' => ModelTodo::cleanTitle($title ?? $this->title),
+                'title' => $this->title,
                 'description' => $this->description,
             ]);
-            $this->todo->syncHashtags($title ?? $this->title);
 
             // Refresh the todo data to update the UI
             $this->todo = ModelTodo::getOwnTodo($this->todo->id);
             $this->title = $this->todo->title;
 
-            // Broadcast the update to other components
-            broadcast(new TodoUpdated(Auth::id()))->toOthers();
             $this->dispatch('hashtags-updated');
-            toast()->success('Todo updated')->push();
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
         }

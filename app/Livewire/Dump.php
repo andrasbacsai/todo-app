@@ -32,9 +32,6 @@ class Dump extends Component
         return [
             "echo-private:user.{$userId},TodoUpdated" => 'refreshTodos',
             'todos-updated' => 'refreshTodos',
-            'title-updated' => 'updateTitle',
-            'todo-input-submit' => 'addTodo',
-            'hashtags-updated' => 'refreshTodos',
         ];
     }
 
@@ -53,18 +50,15 @@ class Dump extends Component
         $this->todos = Todo::getAllTodosExceptToday()->where('status', '!=', 'completed');
     }
 
-    public function addTodo($title = null)
+    public function addTodo()
     {
         try {
             $this->validate();
-            $todo = Todo::create([
-                'title' => Todo::cleanTitle($title ?? $this->title),
+            Auth::user()->todos()->create([
+                'title' => $this->title,
                 'worked_at' => null,
             ]);
-            $todo->syncHashtags($title ?? $this->title);
             $this->title = '';
-            $this->dispatch('todo-saved');
-            $this->refreshTodos();
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
         }
@@ -92,39 +86,6 @@ class Dump extends Component
         } catch (\Exception $e) {
             toast()->danger($e->getMessage())->push();
         }
-    }
-
-    public function updateTodo()
-    {
-        try {
-            $todo = Todo::getOwnTodo($this->editingTodoId);
-            if (! $todo) {
-                throw new \Exception('Todo not found');
-            }
-
-            $todo->update([
-                'title' => Todo::cleanTitle($this->editingTitle),
-                'description' => $this->editingDescription,
-                'status' => $this->todos->where('id', $this->editingTodoId)->first()->status,
-            ]);
-
-            $todo->syncHashtags($this->editingTitle);
-
-            $this->editingTodoId = null;
-            $this->editingTitle = '';
-            $this->editingDescription = '';
-
-            $this->refreshTodos();
-            $this->dispatch('todo-saved');
-            $this->dispatch('hashtags-updated');
-        } catch (\Exception $e) {
-            toast()->danger($e->getMessage())->push();
-        }
-    }
-
-    public function dehydrate()
-    {
-        $this->title = '';
     }
 
     public function render()
