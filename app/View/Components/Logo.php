@@ -20,7 +20,7 @@ class Logo extends Component
     public function render(): View|Closure|string
     {
         return <<<'blade'
-<div class="size-6">
+<div class="size-8">
     <img src="{{ asset('jata.png') }}" alt="Jata">
 </div>
 blade;
