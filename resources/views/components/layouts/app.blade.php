@@ -4,21 +4,22 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="msapplication-TileColor" content="#ffc40d" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="Description" content="Jata: Just Another Todo App, nothing more." />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@heyandras" />
-    <meta name="twitter:title" content="Jata" />
-    <meta name="twitter:description" content="Just Another Todo App, nothing more." />
-    <meta name="twitter:image" content="https://cdn.coollabs.io/assets/jata/og-image.png" />
+
+    <meta name="title" content="Jata: Just Another Todo App, nothing more." />
+    <meta name="description" content="Just Another Todo App, nothing more." />
+
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jata.app" />
-    <meta property="og:title" content="Jata" />
-    <meta property="og:description" content="Just Another Todo App, nothing more." />
-    <meta property="og:site_name" content="Jata" />
+    <meta property="og:title" content="Just another todo app" />
+    <meta property="og:description" content="Nothing more." />
     <meta property="og:image" content="https://cdn.coollabs.io/assets/jata/og-image.png" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://jata.app" />
+    <meta property="twitter:title" content="Just another todo app" />
+    <meta property="twitter:description" content="Nothing more." />
+    <meta property="twitter:image" content="https://cdn.coollabs.io/assets/jata/og-image.png" />
+
     <title>{{ $title ?? 'Template' }}</title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('jata.png') }}">
