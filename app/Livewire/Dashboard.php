@@ -128,14 +128,8 @@ class Dashboard extends Component
     public function switchTodoStatus($id)
     {
         try {
-            $todo = Todo::find($id);
-            if (! $todo) {
-                throw new \Exception('Todo not found');
-            }
-
-            Todo::updateTodo($id, [
-                'title' => $todo->title,
-                'description' => $todo->description,
+            $todo = Todo::getOwnTodo($id);
+            $todo->update([
                 'status' => $todo->status === 'completed' ? 'backlog' : 'completed',
             ]);
 
